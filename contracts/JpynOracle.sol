@@ -178,17 +178,22 @@ contract JpynOracle is OracleErrors{
   * @dev Get request by id.
   * @param _id The id of the request to get.
   */
-  function getRequest(uint256 _id) public returns (GetRequest memory) {
+  function getRequest(uint256 _id) public view returns (GetRequest memory) {
     Request storage req = _requests[_id];
-    if (req.requested) revert Requested();
+    // if (req.requested) revert Requested();
     uint256 accountStatus = req.agreedAccountStatus;
     uint256 accountBalance = req.agreedAccountBalance;
-    req.requested = true;
+    // req.requested = true;
     return GetRequest({
       id: _id,
       accountStatus: accountStatus,
       accountBalance: accountBalance
     });
+  }
+
+  function updateRequested(uint256 _id) public {
+    Request storage req = _requests[_id];
+    req.requested = true;
   }
 
   /**

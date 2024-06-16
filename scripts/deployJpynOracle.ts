@@ -32,7 +32,7 @@ async function main() {
   const deploymentTransaction: DeploymentTransaction =
     await contract.deploymentTransaction();
   const hash: string = deploymentTransaction?.hash ?? "";
-  console.log(`HelloWorld contract deploy address ${getAddress}`);
+  console.log(`JpynOracle contract deploy address ${getAddress}`);
   console.log(
     `Transaction URL: https://explorer.testnet.japanopenchain.org/tx/${hash}`
   );
