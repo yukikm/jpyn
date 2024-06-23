@@ -1,4 +1,3 @@
-import { PrismaClient } from "@prisma/client";
 import { abi } from "../artifacts/contracts/JPYN.sol/JPYN.json";
 import * as dotenv from "dotenv";
 import { ethers } from "ethers";
