@@ -28,10 +28,6 @@ export default function Home() {
             <Typography variant="h2" align="center">
               safe
             </Typography>
-            <Stack direction="row" spacing={2}>
-              <Button variant="contained">Contained</Button>
-              <Button variant="contained">Contained</Button>
-            </Stack>
             <Typography variant="h3" align="center" sx={{ mt: "50px" }}>
               Total Supply
             </Typography>
