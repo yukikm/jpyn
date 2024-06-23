@@ -1,4 +1,4 @@
-import { abi } from "./artifacts/contracts/JPYN.sol/JPYN.json";
+import { abi } from "../artifacts/contracts/JPYN.sol/JPYN.json";
 import * as dotenv from "dotenv";
 import { ethers } from "ethers";
 import log4js from "log4js";
@@ -19,7 +19,7 @@ log4js.configure({
 const privateKey: any = process.env.PRIVATE_KEY;
 const contractAddress: any = process.env.NEXT_PUBLIC_JPYN_CONTRACT_ADDRESS;
 
-const provider = new ethers.providers.JsonRpcProvider(process.env.PROVIDER_URL);
+const provider = new ethers.JsonRpcProvider(process.env.PROVIDER_URL);
 const wallet = new ethers.Wallet(privateKey, provider);
 
 const contract = new ethers.Contract(contractAddress, abi, wallet);
