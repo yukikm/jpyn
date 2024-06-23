@@ -26,6 +26,10 @@ async function main() {
     signer
   );
 
+  console.log(process.env.ADMIN_ADDRESS_1);
+  console.log(process.env.ADMIN_ADDRESS_2);
+  console.log(process.env.ADMIN_ADDRESS_3);
+
   const contract = await factory.deploy(
     process.env.ADMIN_ADDRESS_1 ?? "",
     process.env.ADMIN_ADDRESS_2 ?? "",

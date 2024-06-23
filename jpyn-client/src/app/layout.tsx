@@ -4,6 +4,7 @@ import { ChainContextProvider } from "@/components/ChainContext";
 import Header from "@/components/Header";
 import { ChainContext } from "@/components/ChainContext";
 import Head from "next/head";
+import "../../global.css";
 
 export default function RootLayout({
   children,

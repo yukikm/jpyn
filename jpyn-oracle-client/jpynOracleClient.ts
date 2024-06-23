@@ -4,8 +4,20 @@ import * as dotenv from "dotenv";
 import { ethers } from "ethers";
 import sqlite3 from "sqlite3";
 import axios from "axios";
+import log4js from "log4js";
 
 dotenv.config();
+const logger = log4js.getLogger();
+logger.level = "all";
+log4js.configure({
+  appenders: {
+    out: { type: "stdout" },
+    app: { type: "file", filename: "application.log" },
+  },
+  categories: {
+    default: { appenders: ["out", "app"], level: "debug" },
+  },
+});
 
 // SQLITE DB初期化
 const db = new sqlite3.Database("./local.db", (err) => {
@@ -120,36 +132,45 @@ function checkNewRequest(currentLocalRequestId: number, requestId: number) {
 async function main() {
   while (true) {
     await waitOneMinute();
-    const events: any = await getRequest();
-    console.log("events: ", events);
-    const currentRequestId = await getCurrentRequestId();
-    console.log("currentRequestId: ", currentRequestId);
+    try {
+      const events: any = await getRequest();
+      logger.info("events: ", events);
+      const currentRequestId = await getCurrentRequestId();
+      logger.info("currentRequestId: ", currentRequestId);
 
-    if (!checkNewRequest(currentRequestId, events.length - 1)) {
-      console.log("No new request");
+      if (!checkNewRequest(currentRequestId, events.length - 1)) {
+        logger.info("No new request");
+        continue;
+      }
+
+      const requestId = events[currentRequestId].args[0];
+      logger.info("requestId: ", requestId);
+      const hashedAccount = events[currentRequestId].args[1];
+      logger.info("hashedAccount: ", hashedAccount);
+      const bankAccount = await getBankAccount(hashedAccount);
+      if (bankAccount) {
+        try {
+          const request: any = await requestMufgAPI(
+            `${bankAccount.branchNo}${bankAccount.accountTypeCode}${bankAccount.accountNo}`
+          );
+          await updateRequest(
+            Number(requestId),
+            1,
+            request.data.clearedBalance
+          );
+        } catch (error) {
+          await updateRequest(Number(requestId), 2, 0);
+          logger.error("Error: ", error);
+        }
+      } else {
+        await updateRequest(Number(requestId), 2, 0);
+        logger.info("Bank account not found");
+      }
+      updateRequestId(Number(currentRequestId) + 1);
+    } catch (error) {
+      logger.error("Error: ", error);
       continue;
     }
-
-    const requestId = events[currentRequestId].args[0];
-    console.log("requestId: ", requestId);
-    const hashedAccount = events[currentRequestId].args[1];
-    console.log("hashedAccount: ", hashedAccount);
-    const bankAccount = await getBankAccount(hashedAccount);
-    if (bankAccount) {
-      try {
-        const request: any = await requestMufgAPI(
-          `${bankAccount.branchNo}${bankAccount.accountTypeCode}${bankAccount.accountNo}`
-        );
-        await updateRequest(Number(requestId), 1, request.data.clearedBalance);
-      } catch (error) {
-        await updateRequest(Number(requestId), 2, 0);
-        console.log("Error: ", error);
-      }
-    } else {
-      await updateRequest(Number(requestId), 2, 0);
-      console.log("Bank account not found");
-    }
-    updateRequestId(Number(currentRequestId) + 1);
   }
 }
 

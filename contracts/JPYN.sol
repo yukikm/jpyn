@@ -185,6 +185,10 @@ contract JPYN is IERC20, ERC20Errors, CustomErrors {
         uint256 status;
     }
 
+    event isSafe (
+        bool isSafe
+    );
+
     constructor(
         address admin1,
         address admin2,
@@ -193,7 +197,7 @@ contract JPYN is IERC20, ERC20Errors, CustomErrors {
     ) {
         _name = "JPYN";
         _symbol = "JPYN";
-        _decimals = 6;
+        _decimals = 3;
 
          _totalAdminCount = 3;
         _minAdminCount = 3;
@@ -216,12 +220,12 @@ contract JPYN is IERC20, ERC20Errors, CustomErrors {
     }
 
     modifier onlyAdmin() {
-        if (!_admins[_msgSender()]) revert OnlyAdmin();
+        if (!_admins[msg.sender]) revert OnlyAdmin();
         _;
     }
 
     modifier blackListAddress() {
-        if (_blackListAddresses[_msgSender()]) revert BlackListAddress();
+        if (_blackListAddresses[msg.sender]) revert BlackListAddress();
         _;
     }
 
@@ -230,12 +234,15 @@ contract JPYN is IERC20, ERC20Errors, CustomErrors {
         _;
     }
 
+    function getTransferFee () public view blackListAddress returns (uint256) {
+        return _transferFee;
+    }
 
     /**
     * @dev Check if the sender is an admin.
     * @param sender The address of the sender to check.
     */
-    function isAddmin(address sender) public blackListAddress view returns (bool) {
+    function isAdmin(address sender) public blackListAddress view returns (bool) {
         return _admins[sender];
     }
 
@@ -247,7 +254,7 @@ contract JPYN is IERC20, ERC20Errors, CustomErrors {
         if (_totalAdminCount < _minAdminCount) revert NotEnoughAdmins();
         ProposedTransferFee storage ptf = _proposedTransferFees[_currentProposedTransferFeeId];
         ptf.proposedTransferFee = _newTransferFee;
-        ptf.proposer = _msgSender();
+        ptf.proposer = msg.sender;
         unchecked {
             _currentProposedTransferFeeId++;
         }
@@ -276,7 +283,7 @@ contract JPYN is IERC20, ERC20Errors, CustomErrors {
     */
     function voteProposedTransferFee(uint256 _id, bool _vote) public onlyAdmin blackListAddress notEnoughAdmins {
         ProposedTransferFee storage ptf = _proposedTransferFees[_id];
-        if (ptf.voted[_msgSender()]) revert AlreadyVotedProposedTransferFee();
+        if (ptf.voted[msg.sender]) revert AlreadyVotedProposedTransferFee();
         
         if (_vote) {
             unchecked {
@@ -287,7 +294,7 @@ contract JPYN is IERC20, ERC20Errors, CustomErrors {
                 ptf.rejectCount++;
             }
         }
-        ptf.voted[_msgSender()] = true;
+        ptf.voted[msg.sender] = true;
 
         if (ptf.approvalCount >= _minApprovalCount) {
             _transferFee = ptf.proposedTransferFee;
@@ -295,15 +302,6 @@ contract JPYN is IERC20, ERC20Errors, CustomErrors {
         } else if (ptf.rejectCount >= _minApprovalCount) {
             ptf.status = 2;
         }
-    }
-
-    /**
-    * @dev Check if the sender has voted on a proposed transfer fee
-    * @param _id The id of the proposed transfer fee to check
-    * @param _sender The address of the sender to check
-    */
-    function isVoteProposedTransferFee(uint256 _id, address _sender) public view blackListAddress returns (bool) {
-        return _proposedTransferFees[_id].voted[_sender];
     }
 
     /**
@@ -316,14 +314,14 @@ contract JPYN is IERC20, ERC20Errors, CustomErrors {
             if (_admins[_address]) revert ExistingAdmin();
             ProposedAdmin storage pa = _proposedAdmin[_currentProposedAdminId];
             pa.proposedAdmin = _address;
-            pa.proposer = _msgSender();
+            pa.proposer = msg.sender;
             unchecked {
                 _currentProposedAdminId++;
             }
         } else {
             ProposedRemovedAdmin storage pra = _proposedRemovedAdmin[_currentProposedRemovedAdminId];
             pra.proposedRemovedAdmin = _address;
-            pra.proposer = _msgSender();
+            pra.proposer = msg.sender;
             unchecked {
                 _currentProposedRemovedAdminId++;
             }
@@ -369,7 +367,7 @@ contract JPYN is IERC20, ERC20Errors, CustomErrors {
     function voteProposedAdmin(uint256 _id, bool _vote, uint256 _type) public onlyAdmin blackListAddress notEnoughAdmins {
         if (_type == 0) {
             ProposedAdmin storage pa = _proposedAdmin[_id];
-            if (pa.voted[_msgSender()]) revert AlreadyVotedProposedAdmin();
+            if (pa.voted[msg.sender]) revert AlreadyVotedProposedAdmin();
             
             if (_vote) {
                 unchecked {
@@ -380,7 +378,7 @@ contract JPYN is IERC20, ERC20Errors, CustomErrors {
                     pa.rejectCount++;
                 }
             }
-            pa.voted[_msgSender()] = true;
+            pa.voted[msg.sender] = true;
 
             if (pa.approvalCount >= _minApprovalCount) {
                 _addAdmin(pa.proposedAdmin);
@@ -390,7 +388,7 @@ contract JPYN is IERC20, ERC20Errors, CustomErrors {
             }
         } else {
             ProposedRemovedAdmin storage pra = _proposedRemovedAdmin[_id];
-            if (pra.voted[_msgSender()]) revert AlreadyVotedProposedRemovedAdmin();
+            if (pra.voted[msg.sender]) revert AlreadyVotedProposedRemovedAdmin();
             
             if (_vote) {
                 unchecked {
@@ -401,7 +399,7 @@ contract JPYN is IERC20, ERC20Errors, CustomErrors {
                     pra.rejectCount++;
                 }
             }
-            pra.voted[_msgSender()] = true;
+            pra.voted[msg.sender] = true;
 
             if (pra.approvalCount >= _minApprovalCount) {
                 _removeAdmin(pra.proposedRemovedAdmin);
@@ -409,20 +407,6 @@ contract JPYN is IERC20, ERC20Errors, CustomErrors {
             } else if (pra.rejectCount >= _minApprovalCount) {
                 pra.status = 2;
             }
-        }
-    }
-
-    /**
-    * @dev Check if the sender has voted on a proposed admin
-    * @param _id The id of the proposed admin to check
-    * @param _sender The address of the sender to check
-    * @param _type Function type. 0 = add admin, 1 = remove admin
-    */
-    function isVoteProposedAdmin(uint256 _id, address _sender, uint256 _type) public view blackListAddress returns (bool) {
-        if (_type == 0) {
-            return _proposedAdmin[_id].voted[_sender];
-        } else {
-            return _proposedRemovedAdmin[_id].voted[_sender];
         }
     }
 
@@ -435,14 +419,14 @@ contract JPYN is IERC20, ERC20Errors, CustomErrors {
         if (_type == 0) {
             ProposedBlackListAddress storage pbla = _proposedBlackListAddress[_currentProposedBlackListAddressId];
             pbla.proposedBlackListAddress = _blackListAddress;
-            pbla.proposer = _msgSender();
+            pbla.proposer = msg.sender;
             unchecked {
                 _currentProposedBlackListAddressId++;
             }
         } else {
             ProposedRemoveBlackListAddress storage prbla = _proposedRemoveBlackListAddress[_currentProposedRemoveBlackListAddressId];
             prbla.proposedRemoveBlackListAddress = _blackListAddress;
-            prbla.proposer = _msgSender();
+            prbla.proposer = msg.sender;
             unchecked {
                 _currentProposedRemoveBlackListAddressId++;
             }
@@ -488,7 +472,7 @@ contract JPYN is IERC20, ERC20Errors, CustomErrors {
     function voteProposedBlackListAddress(uint256 _id, bool _vote, uint256 _type) public onlyAdmin blackListAddress notEnoughAdmins {
         if (_type == 0) {
             ProposedBlackListAddress storage pbla = _proposedBlackListAddress[_id];
-            if (pbla.voted[_msgSender()]) revert AlreadyVotedProposedBlackListAddress();
+            if (pbla.voted[msg.sender]) revert AlreadyVotedProposedBlackListAddress();
             
             if (_vote) {
                 unchecked {
@@ -499,7 +483,7 @@ contract JPYN is IERC20, ERC20Errors, CustomErrors {
                     pbla.rejectCount++;
                 }
             }
-            pbla.voted[_msgSender()] = true;
+            pbla.voted[msg.sender] = true;
 
             if (pbla.approvalCount >= _minApprovalCount) {
                 _blackListAddresses[pbla.proposedBlackListAddress] = true;
@@ -509,7 +493,7 @@ contract JPYN is IERC20, ERC20Errors, CustomErrors {
             }
         } else {
             ProposedRemoveBlackListAddress storage prbla = _proposedRemoveBlackListAddress[_id];
-            if (prbla.voted[_msgSender()]) revert AlreadyVotedProposedRemoveBlackListAddress();
+            if (prbla.voted[msg.sender]) revert AlreadyVotedProposedRemoveBlackListAddress();
             
             if (_vote) {
                 unchecked {
@@ -520,7 +504,7 @@ contract JPYN is IERC20, ERC20Errors, CustomErrors {
                     prbla.rejectCount++;
                 }
             }
-            prbla.voted[_msgSender()] = true;
+            prbla.voted[msg.sender] = true;
 
             if (prbla.approvalCount >= _minApprovalCount) {
                 _blackListAddresses[prbla.proposedRemoveBlackListAddress] = false;
@@ -528,20 +512,6 @@ contract JPYN is IERC20, ERC20Errors, CustomErrors {
             } else if (prbla.rejectCount >= _minApprovalCount) {
                 prbla.status = 2;
             }
-        }
-    }
-
-    /**
-    * @dev Check if the sender has voted on a proposed black list address
-    * @param _id The id of the proposed black list address to check
-    * @param _sender The address of the sender to check
-    * @param _type Function type. 0 = add black list address, 1 = remove black list address
-    */
-    function isVoteProposedBlackListAddress(uint256 _id, address _sender, uint256 _type) public view blackListAddress returns (bool) {
-        if (_type == 0) {
-            return _proposedBlackListAddress[_id].voted[_sender];
-        } else {
-            return _proposedRemoveBlackListAddress[_id].voted[_sender];
         }
     }
 
@@ -554,14 +524,14 @@ contract JPYN is IERC20, ERC20Errors, CustomErrors {
         if (_type == 0){
             ProposedBankBlackList storage pbbl = _proposedBankBlackList[_currentProposedBankBlackListId];
             pbbl.proposedBankBlackList = _pBankBlackList;
-            pbbl.proposer = _msgSender();
+            pbbl.proposer = msg.sender;
             unchecked {
                 _currentProposedBankBlackListId++;
             }
         } else {
             ProposedRemoveBankBlackList storage prbbl = _proposedRemoveBankBlackList[_currentProposedRemoveBankBlackListId];
             prbbl.proposedRemoveBankBlackList = _pBankBlackList;
-            prbbl.proposer = _msgSender();
+            prbbl.proposer = msg.sender;
             unchecked {
                 _currentProposedRemoveBankBlackListId++;
             }
@@ -607,7 +577,7 @@ contract JPYN is IERC20, ERC20Errors, CustomErrors {
     function voteProposedBankBlackList(uint256 _id, bool _vote, uint256 _type) public onlyAdmin blackListAddress notEnoughAdmins {
         if (_type == 0) {
             ProposedBankBlackList storage pbbl = _proposedBankBlackList[_id];
-            if (pbbl.voted[_msgSender()]) revert AlreadyVotedProposedBankBlackList();
+            if (pbbl.voted[msg.sender]) revert AlreadyVotedProposedBankBlackList();
             
             if (_vote) {
                 unchecked {
@@ -618,7 +588,7 @@ contract JPYN is IERC20, ERC20Errors, CustomErrors {
                     pbbl.rejectCount++;
                 }
             }
-            pbbl.voted[_msgSender()] = true;
+            pbbl.voted[msg.sender] = true;
 
             if (pbbl.approvalCount >= _minApprovalCount) {
                 _bankBlackList[pbbl.proposedBankBlackList] = true;
@@ -628,7 +598,7 @@ contract JPYN is IERC20, ERC20Errors, CustomErrors {
             }
         } else {
             ProposedRemoveBankBlackList storage prbbl = _proposedRemoveBankBlackList[_id];
-            if (prbbl.voted[_msgSender()]) revert AlreadyVotedProposedRemoveBankBlackList();
+            if (prbbl.voted[msg.sender]) revert AlreadyVotedProposedRemoveBankBlackList();
             
             if (_vote) {
                 unchecked {
@@ -639,7 +609,7 @@ contract JPYN is IERC20, ERC20Errors, CustomErrors {
                     prbbl.rejectCount++;
                 }
             }
-            prbbl.voted[_msgSender()] = true;
+            prbbl.voted[msg.sender] = true;
 
             if (prbbl.approvalCount >= _minApprovalCount) {
                 _bankBlackList[prbbl.proposedRemoveBankBlackList] = false;
@@ -647,20 +617,6 @@ contract JPYN is IERC20, ERC20Errors, CustomErrors {
             } else if (prbbl.rejectCount >= _minApprovalCount) {
                 prbbl.status = 2;
             }
-        }
-    }
-
-    /**
-    * @dev Check if the sender has voted on a proposed bank black list
-    * @param _id The id of the proposed bank black list to check
-    * @param _sender The address of the sender to check
-    * @param _type Function type. 0 = add bank black list, 1 = remove bank black list
-    */
-    function isVoteProposedBankBlackList(uint256 _id, address _sender, uint256 _type) public view blackListAddress returns (bool) {
-        if (_type == 0) {
-            return _proposedBankBlackList[_id].voted[_sender];
-        } else {
-            return _proposedRemoveBankBlackList[_id].voted[_sender];
         }
     }
 
@@ -687,8 +643,9 @@ contract JPYN is IERC20, ERC20Errors, CustomErrors {
      * - the caller must have a balance of at least `value`.
      */
     function transfer(address to, uint256 value) public virtual blackListAddress returns (bool) {
+        address owner = msg.sender;
         if (_transferFee != 0) {
-            _transfer(_msgSender(), _adminIds[_nextReceiveFeeAddressId], _transferFee);
+            _transfer(owner, _adminIds[_nextReceiveFeeAddressId], _transferFee);
             unchecked {
                 _nextReceiveFeeAddressId++;
             }
@@ -696,7 +653,6 @@ contract JPYN is IERC20, ERC20Errors, CustomErrors {
                 _nextReceiveFeeAddressId = 0;
             }
         }
-        address owner = _msgSender();
         _transfer(owner, to, value);
         return true;
     }
@@ -719,7 +675,7 @@ contract JPYN is IERC20, ERC20Errors, CustomErrors {
      * - `spender` cannot be the zero address.
      */
     function approve(address spender, uint256 value) public virtual returns (bool) {
-        address owner = _msgSender();
+        address owner = msg.sender;
         _approve(owner, spender, value);
         return true;
     }
@@ -741,8 +697,12 @@ contract JPYN is IERC20, ERC20Errors, CustomErrors {
      * `value`.
      */
     function transferFrom(address from, address to, uint256 value) public virtual returns (bool) {
+        address spender = msg.sender;
+        unchecked {
+            _spendAllowance(from, spender, value + _transferFee);
+        }
         if (_transferFee != 0) {
-            _transfer(_msgSender(), _adminIds[_nextReceiveFeeAddressId], _transferFee);
+            _transfer(spender, _adminIds[_nextReceiveFeeAddressId], _transferFee);
             unchecked {
                 _nextReceiveFeeAddressId++;
             }
@@ -750,8 +710,6 @@ contract JPYN is IERC20, ERC20Errors, CustomErrors {
                 _nextReceiveFeeAddressId = 0;
             }
         }
-        address spender = _msgSender();
-        _spendAllowance(from, spender, value);
         _transfer(from, to, value);
         return true;
     }
@@ -762,7 +720,7 @@ contract JPYN is IERC20, ERC20Errors, CustomErrors {
     function registerAddressToBank(string memory _hashedBankAccount) public blackListAddress {
         if (_bankBlackList[_hashedBankAccount]) revert BankBlackList();
         if (_addressToBank[_hashedBankAccount] != address(0)) revert AlreadyRegistered();
-        _addressToBank[_hashedBankAccount] = _msgSender();
+        _addressToBank[_hashedBankAccount] = msg.sender;
         _hashedBankAccountIds[_currentHashedBankAccountId] = _hashedBankAccount;
         unchecked {
             _currentHashedBankAccountId++;
@@ -784,16 +742,16 @@ contract JPYN is IERC20, ERC20Errors, CustomErrors {
     /**
      * @dev Check if the total supply is safe. false is unsafe, true is safe.
      */
-    function isSafeTotalSupply() public blackListAddress returns(bool) {
+    function isSafeTotalSupply() public blackListAddress{
         uint256 balance = 0;
         for (uint256 i = 0; i < _currentHashedBankAccountId; i++) {
             IJpynOracle.GetRequest memory res = _jpynOracle.getRequest(_bankAccountBalanceRequestIds[_hashedBankAccountIds[i]]);
             balance = balance + res.accountBalance;
         }
         if (balance < _totalSupply) {
-            return false;
+            emit isSafe (false);
         } else {
-            return true;
+            emit isSafe (true);
         }
     }
 
@@ -876,11 +834,8 @@ contract JPYN is IERC20, ERC20Errors, CustomErrors {
      *
      * NOTE: This function is not virtual, {_update} should be overridden instead
      */
-    function burn(address account, uint256 value) public {
-        if (account == address(0)) {
-            revert ERC20InvalidSender(address(0));
-        }
-        _update(account, address(0), value);
+    function burn(uint256 value) public {
+        _update(msg.sender, address(0), value);
     }
 
     /**
@@ -951,13 +906,6 @@ contract JPYN is IERC20, ERC20Errors, CustomErrors {
                 _approve(owner, spender, currentAllowance - value, false);
             }
         }
-    }
-
-    /**
-     * @dev Returns the current `msg.sender`.
-     */
-    function _msgSender() internal view returns (address) {
-        return msg.sender;
     }
 
     /**
