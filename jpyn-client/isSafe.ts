@@ -16,7 +16,6 @@ log4js.configure({
   },
 });
 
-const prisma = new PrismaClient();
 const privateKey: any = process.env.PRIVATE_KEY;
 const contractAddress: any = process.env.NEXT_PUBLIC_JPYN_CONTRACT_ADDRESS;
 
