@@ -174,7 +174,7 @@ async function main() {
 }
 
 async function waitOneMinute() {
-  return await new Promise((resolve) => setTimeout(resolve, 10000));
+  return await new Promise((resolve) => setTimeout(resolve, 30000));
 }
 
 main();
