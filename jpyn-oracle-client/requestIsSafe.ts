@@ -8,11 +8,10 @@ const logger = log4js.getLogger();
 logger.level = "all";
 log4js.configure({
   appenders: {
-    out: { type: "stdout" },
     app: { type: "file", filename: "application.log" },
   },
   categories: {
-    default: { appenders: ["out", "app"], level: "debug" },
+    default: { appenders: ["app"], level: "debug" },
   },
 });
 
