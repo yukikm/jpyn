@@ -38,6 +38,7 @@ export const ChainContextProvider = ({
     const provider = await detectEthereumProvider({ silent: true });
     if (provider) {
       const ethersProvider = new ethers.providers.Web3Provider(window.ethereum);
+      window.ethereum.enable();
       const signer = ethersProvider.getSigner();
       setSigner(signer);
       await signer.signMessage("Hello");

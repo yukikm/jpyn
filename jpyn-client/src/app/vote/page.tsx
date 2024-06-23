@@ -282,13 +282,6 @@ export default function Propose() {
       alert(e);
     }
   };
-  //   0xEE8b59794Ee3A6aeeCE9aa09a118bB6ba1029e3c Admin1
-  //   0x70997970C51812dc3A010C7d01b50e0d17dc79C8 Oracle 1
-  //   0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266 Oracle2
-
-  // Oracleのみ
-  //   0x8f23B5440aa87f25F38a550e7E3926CbA052005E Admin 2
-  // ------------------------------------------------
   const getProposedRemoveWalletBlackList = async () => {
     const currentBlackListAddressId =
       await getCurrentProposedBlackListAddressId(signer, 1);
@@ -397,7 +390,7 @@ export default function Propose() {
           </Typography>
           {proposedTransferFees!.map((_transferFee, _index) => {
             return (
-              <Card sx={{ maxWidth: 345 }} key={_index}>
+              <Card sx={{ maxWidth: 345, mt: "10px" }} key={_index}>
                 <CardContent>
                   <Typography gutterBottom variant="h5" component="div">
                     {Number(_transferFee.proposedTransferFee)} JPYN
@@ -451,9 +444,9 @@ export default function Propose() {
           </Typography>
           {proposedAddAdmin!.map((_admin, _index) => {
             return (
-              <Card sx={{ maxWidth: 345 }} key={_index}>
+              <Card sx={{ maxWidth: 400, mt: "10px" }} key={_index}>
                 <CardContent>
-                  <Typography gutterBottom variant="h5" component="div">
+                  <Typography gutterBottom variant="body2" component="div">
                     {String(_admin.proposedAdmin)}
                   </Typography>
                 </CardContent>
@@ -505,9 +498,9 @@ export default function Propose() {
           </Typography>
           {proposedRemoveAdmin!.map((_admin, _index) => {
             return (
-              <Card sx={{ maxWidth: 345 }} key={_index}>
+              <Card sx={{ maxWidth: 400, mt: "10px" }} key={_index}>
                 <CardContent>
-                  <Typography gutterBottom variant="h5" component="div">
+                  <Typography gutterBottom variant="body2" component="div">
                     {String(_admin.proposedRemovedAdmin)}
                   </Typography>
                 </CardContent>
@@ -559,9 +552,9 @@ export default function Propose() {
           </Typography>
           {proposedAddWalletBlackList!.map((_blacklist, _index) => {
             return (
-              <Card sx={{ maxWidth: 345 }} key={_index}>
+              <Card sx={{ maxWidth: 400, mt: "10px" }} key={_index}>
                 <CardContent>
-                  <Typography gutterBottom variant="h5" component="div">
+                  <Typography gutterBottom variant="body2" component="div">
                     {String(_blacklist.proposedBlackListAddress)}
                   </Typography>
                 </CardContent>
@@ -613,9 +606,9 @@ export default function Propose() {
           </Typography>
           {proposedRemoveWalletBlackList!.map((_blacklist, _index) => {
             return (
-              <Card sx={{ maxWidth: 345 }} key={_index}>
+              <Card sx={{ maxWidth: 400, mt: "10px" }} key={_index}>
                 <CardContent>
-                  <Typography gutterBottom variant="h5" component="div">
+                  <Typography gutterBottom variant="body2" component="div">
                     {String(_blacklist.proposedRemoveBlackListAddress)}
                   </Typography>
                 </CardContent>
@@ -669,9 +662,9 @@ export default function Propose() {
           </Typography>
           {proposedAddBankBlackList!.map((_blacklist, _index) => {
             return (
-              <Card sx={{ maxWidth: 345 }} key={_index}>
+              <Card sx={{ maxWidth: 400, mt: "10px" }} key={_index}>
                 <CardContent>
-                  <Typography gutterBottom variant="h5" component="div">
+                  <Typography gutterBottom variant="body2" component="div">
                     {String(_blacklist.proposedBankBlackList)}
                   </Typography>
                 </CardContent>
@@ -723,9 +716,9 @@ export default function Propose() {
           </Typography>
           {proposedRemoveBankBlackList!.map((_blacklist, _index) => {
             return (
-              <Card sx={{ maxWidth: 345 }} key={_index}>
+              <Card sx={{ maxWidth: 400, mt: "10px" }} key={_index}>
                 <CardContent>
-                  <Typography gutterBottom variant="h5" component="div">
+                  <Typography gutterBottom variant="body2" component="div">
                     {String(_blacklist.proposedRemoveBankBlackList)}
                   </Typography>
                 </CardContent>
