@@ -34,6 +34,7 @@ export const ChainContextProvider = ({
   const [oracle, setOracle] = useState<boolean>(false);
   const [transferFee, setTransferFee] = useState<number>(0);
   const [gTotalSupply, setGTotalSupply] = useState<number>(0);
+  const [isJpynSafe, setIsJpynSafe] = useState(true);
   async function connectWallet() {
     const provider = await detectEthereumProvider({ silent: true });
     if (provider) {
@@ -56,12 +57,25 @@ export const ChainContextProvider = ({
       setTransferFee(transferFee);
       const totalSupply = await _getTotalSupply(signer);
       setGTotalSupply(totalSupply);
+      const isJpynSafe = await isSafeEvent(signer);
+      setIsJpynSafe(isJpynSafe);
       provider.on("accountsChanged", () => {
         window.location.reload();
       });
     } else {
       alert("Please install Metamask Wallet");
     }
+  }
+
+  async function isSafeEvent(signer: any) {
+    const contract = new ethers.Contract(
+      JPYN_CONTRACT_ADDRESS!,
+      JPYN.abi,
+      signer!
+    );
+    const filter = contract.filters.isSafe();
+    const events = await contract.queryFilter(filter);
+    return events[events.length - 1].args?.isSafe;
   }
 
   async function _addOracle(signer: any, address: string) {
@@ -999,6 +1013,7 @@ export const ChainContextProvider = ({
         transferFee,
         gTotalSupply,
         admin,
+        isJpynSafe,
         isAdmin,
         proposeTransferFee,
         getCurrentProposedTransferFeeId,

@@ -4,7 +4,8 @@ import { useContext } from "react";
 import { ChainContext } from "@/components/ChainContext";
 
 export default function Home() {
-  const { signer, gTotalSupply, transferFee } = useContext(ChainContext);
+  const { signer, gTotalSupply, transferFee, isJpynSafe } =
+    useContext(ChainContext);
 
   return (
     <Box
@@ -25,9 +26,16 @@ export default function Home() {
             <Typography variant="h3" align="center" sx={{ mt: "50px" }}>
               Is JPYN safe ?
             </Typography>
-            <Typography variant="h2" align="center">
-              safe
-            </Typography>
+            {isJpynSafe ? (
+              <Typography variant="h2" align="center" sx={{ color: "green" }}>
+                SAFE
+              </Typography>
+            ) : (
+              <Typography variant="h2" align="center" sx={{ color: "red" }}>
+                UNSAFE
+              </Typography>
+            )}
+
             <Typography variant="h3" align="center" sx={{ mt: "50px" }}>
               Total Supply
             </Typography>

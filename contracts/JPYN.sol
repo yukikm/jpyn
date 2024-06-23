@@ -204,7 +204,7 @@ contract JPYN is IERC20, ERC20Errors, CustomErrors {
         _minApprovalCount = 2;
         _currentAdminId = 3;
 
-        _transferFee = 0;
+        _transferFee = 10;
         _proposedTransferFee = 0;
 
         _admins[admin1] = true;
