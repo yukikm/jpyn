@@ -1,4 +1,4 @@
-import { abi } from "../artifacts/contracts/JPYN.sol/JPYN.json";
+import { abi } from "./artifacts/contracts/JPYN.sol/JPYN.json";
 import * as dotenv from "dotenv";
 import { ethers } from "ethers";
 import log4js from "log4js";
