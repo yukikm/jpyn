@@ -1,0 +1,96 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "CustomErrors",
+  "sourceName": "contracts/interfaces/CustomErrors.sol",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "AlreadyRegistered",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "AlreadyVotedProposedAdmin",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "AlreadyVotedProposedBankBlackList",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "AlreadyVotedProposedBlackListAddress",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "AlreadyVotedProposedRemoveBankBlackList",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "AlreadyVotedProposedRemoveBlackListAddress",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "AlreadyVotedProposedRemovedAdmin",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "AlreadyVotedProposedTransferFee",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "BankAccountFalse",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "BankBlackList",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "BlackListAddress",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "ExistingAdmin",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "NotEnoughAdmins",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "NotExistingAdmin",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "NotRegistered",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "NotYourAddress",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "OnlyAdmin",
+      "type": "error"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

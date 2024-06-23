@@ -133,7 +133,7 @@ async function main() {
     await waitOneMinute();
     try {
       const events: any = await getRequest();
-      logger.info("events: ", events);
+      // logger.info("events: ", events);
       const currentRequestId = await getCurrentRequestId();
       logger.info("currentRequestId: ", currentRequestId);
 
