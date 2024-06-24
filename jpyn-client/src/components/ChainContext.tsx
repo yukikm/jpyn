@@ -980,17 +980,17 @@ export const ChainContextProvider = ({
     await _mint(signer, hashedBankAccount);
   }
 
-  async function _burn(signer: any, account: string, amount: number) {
+  async function _burn(signer: any, amount: number) {
     const contract = new ethers.Contract(
       JPYN_CONTRACT_ADDRESS!,
       JPYN.abi,
       signer!
     );
-    await contract.burn(account, amount);
+    await contract.burn(amount);
   }
 
-  async function burn(signer: any, account: string, amount: number) {
-    await _burn(signer, account, amount);
+  async function burn(signer: any, amount: number) {
+    await _burn(signer, amount);
   }
 
   return (
