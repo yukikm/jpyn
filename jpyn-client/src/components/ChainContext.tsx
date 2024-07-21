@@ -683,6 +683,7 @@ export const ChainContextProvider = ({
       JPYN.abi,
       signer!
     );
+    console.log("contract", address);
     await contract.proposeBankBlackList(address, type);
   }
 

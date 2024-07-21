@@ -98,7 +98,9 @@ export default function Mint() {
       `${inputBranchNoChange}${inputAccountTypeCodeChange}${inputAccountNoChange}`
     );
     const hashedAccount = ethers.utils.keccak256(bankAccountToByte);
+
     try {
+      await registerAddressToBank(signer, hashedAccount);
       const url = "/api/bank";
       // リクエストパラメータ
       const params = {
@@ -116,12 +118,6 @@ export default function Mint() {
         }),
       };
       await fetch(url, params);
-    } catch (e) {
-      alert(e);
-    }
-
-    try {
-      await registerAddressToBank(signer, hashedAccount);
       setInputBranchNoChange("");
       setInputAccountTypeCodeChange("");
       setInputAccountNoChange("");

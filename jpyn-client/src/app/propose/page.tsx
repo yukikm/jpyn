@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import { useContext, useState } from "react";
 import { ChainContext } from "@/components/ChainContext";
+import { ethers } from "ethers";
 
 const style = {
   position: "absolute" as "absolute",
@@ -114,9 +115,25 @@ export default function Propose() {
     setAddBankBlacklistCompleteOpen(true);
   const handleAddBankBlacklistCompleteClose = () =>
     setAddBankBlacklistCompleteOpen(false);
-
-  const [inputRemoveBankBlacklistValue, setInputRemoveBankBlacklistValue] =
+  const [inputAddBankBranchNoValue, setInputAddBankBranchNoValue] =
     useState("");
+  const [
+    inputAddBankAccountTypeCodeValue,
+    setInputAddBankAccountTypeCodeValue,
+  ] = useState("");
+  const [inputAddBankAccountNoCodeValue, setInputAddBankAccountNoCodeValue] =
+    useState("");
+
+  const [inputRemoveBankBranchNoValue, setInputRemoveBankBranchNoValue] =
+    useState("");
+  const [
+    inputRemoveBankAccountTypeCodeValue,
+    setInputRemoveBankAccountTypeCodeValue,
+  ] = useState("");
+  const [
+    inputRemoveBankAccountNoCodeValue,
+    setInputRemoveBankAccountNoCodeValue,
+  ] = useState("");
   const [removeBankBlacklistCompleteOpen, setRemoveBankBlacklistCompleteOpen] =
     useState(false);
   const handleRemoveBankBlacklistCompleteOpen = () =>
@@ -208,16 +225,53 @@ export default function Propose() {
   };
 
   // ------------------------------------------------
-  const handleAddBankBlacklistChange = (
+  const handleAddBankBranchNoChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setInputAddBankBlacklistValue(event.target.value);
+    setInputAddBankBranchNoValue(event.target.value);
+  };
+
+  const handleAddBankAccountTypeCodeChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setInputAddBankAccountTypeCodeValue(event.target.value);
+  };
+
+  const handleAddBankAccountNoCodeChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setInputAddBankAccountNoCodeValue(event.target.value);
   };
 
   const handleProposeAddBankBlacklist = async () => {
     try {
-      await proposeBankBlackList(signer, inputAddBankBlacklistValue, 0);
-      setInputAddBankBlacklistValue("");
+      const bankAccountToByte = ethers.utils.toUtf8Bytes(
+        `${inputAddBankBranchNoValue}${inputAddBankAccountTypeCodeValue}${inputAddBankAccountNoCodeValue}`
+      );
+      const hashedAccount = ethers.utils.keccak256(bankAccountToByte);
+
+      const url = "/api/blackListBank";
+      // リクエストパラメータ
+      const params = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        // リクエストボディ
+        body: JSON.stringify({
+          hashedAccount: hashedAccount,
+          branchNo: inputAddBankBranchNoValue,
+          accountTypeCode: inputAddBankAccountTypeCodeValue,
+          accountNo: inputAddBankAccountNoCodeValue,
+        }),
+      };
+      await fetch(url, params);
+      console.log("hashedAccount", hashedAccount);
+
+      await proposeBankBlackList(signer, hashedAccount, 0);
+      setInputAddBankBranchNoValue("");
+      setInputAddBankAccountTypeCodeValue("");
+      setInputAddBankAccountNoCodeValue("");
       handleAddBankBlacklistCompleteOpen();
     } catch (e) {
       alert(e);
@@ -225,16 +279,52 @@ export default function Propose() {
   };
 
   // ------------------------------------------------
-  const handleRemoveBankBlacklistChange = (
+  const handleRemoveBankBranchNoChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setInputRemoveBankBlacklistValue(event.target.value);
+    setInputRemoveBankBranchNoValue(event.target.value);
+  };
+
+  const handleRemoveBankAccountTypeCodeChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setInputRemoveBankAccountTypeCodeValue(event.target.value);
+  };
+
+  const handleRemoveBankAccountNoCodeChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setInputRemoveBankAccountNoCodeValue(event.target.value);
   };
 
   const handleProposeRemoveBankBlacklist = async () => {
     try {
-      await proposeBankBlackList(signer, inputRemoveBankBlacklistValue, 1);
-      setInputRemoveBankBlacklistValue("");
+      const bankAccountToByte = ethers.utils.toUtf8Bytes(
+        `${inputRemoveBankBranchNoValue}${inputRemoveBankAccountTypeCodeValue}${inputRemoveBankAccountNoCodeValue}`
+      );
+      const hashedAccount = ethers.utils.keccak256(bankAccountToByte);
+
+      const url = "/api/blackListBank";
+      // リクエストパラメータ
+      const params = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        // リクエストボディ
+        body: JSON.stringify({
+          hashedAccount: hashedAccount,
+          branchNo: inputRemoveBankBranchNoValue,
+          accountTypeCode: inputRemoveBankAccountTypeCodeValue,
+          accountNo: inputRemoveBankAccountNoCodeValue,
+        }),
+      };
+      await fetch(url, params);
+
+      await proposeBankBlackList(signer, hashedAccount, 1);
+      setInputRemoveBankBranchNoValue("");
+      setInputRemoveBankAccountTypeCodeValue("");
+      setInputRemoveBankAccountNoCodeValue("");
       handleRemoveBankBlacklistCompleteOpen();
     } catch (e) {
       alert(e);
@@ -480,10 +570,24 @@ export default function Propose() {
             Propose to add the hashed bank account to the bank blacklist.
           </Typography>
           <TextField
-            label="ADD HASHED BANK ACCOUNT BLACKLIST"
+            label="Branch No"
             variant="outlined"
-            value={inputAddBankBlacklistValue}
-            onChange={handleAddBankBlacklistChange}
+            value={inputAddBankBranchNoValue}
+            onChange={handleAddBankBranchNoChange}
+            sx={{ width: "100%", mt: "20px" }}
+          />
+          <TextField
+            label="Account Type Code"
+            variant="outlined"
+            value={inputAddBankAccountTypeCodeValue}
+            onChange={handleAddBankAccountTypeCodeChange}
+            sx={{ width: "100%", mt: "20px" }}
+          />
+          <TextField
+            label="Account No"
+            variant="outlined"
+            value={inputAddBankAccountNoCodeValue}
+            onChange={handleAddBankAccountNoCodeChange}
             sx={{ width: "100%", mt: "20px" }}
           />
           <Button
@@ -520,10 +624,24 @@ export default function Propose() {
             Propose to remove the hashed bank account from the bank blacklist.
           </Typography>
           <TextField
-            label="REMOVE HASHED BANK ACCOUNT BLACKLIST"
+            label="Branch No"
             variant="outlined"
-            value={inputRemoveBankBlacklistValue}
-            onChange={handleRemoveBankBlacklistChange}
+            value={inputRemoveBankBranchNoValue}
+            onChange={handleRemoveBankBranchNoChange}
+            sx={{ width: "100%", mt: "20px" }}
+          />
+          <TextField
+            label="Account Type Code"
+            variant="outlined"
+            value={inputRemoveBankAccountTypeCodeValue}
+            onChange={handleRemoveBankAccountTypeCodeChange}
+            sx={{ width: "100%", mt: "20px" }}
+          />
+          <TextField
+            label="Account No"
+            variant="outlined"
+            value={inputRemoveBankAccountNoCodeValue}
+            onChange={handleRemoveBankAccountNoCodeChange}
             sx={{ width: "100%", mt: "20px" }}
           />
           <Button

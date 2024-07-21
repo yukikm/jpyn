@@ -96,6 +96,9 @@ type RemoveWalletBlacklist = {
 };
 
 type AddBankBlackList = {
+  branchNo: string;
+  accountTypeCode: string;
+  accountNo: string;
   proposedBankBlackList: string;
   proposer: string;
   approvalCount: number;
@@ -104,6 +107,9 @@ type AddBankBlackList = {
 };
 
 type RemoveBankBlackList = {
+  branchNo: string;
+  accountTypeCode: string;
+  accountNo: string;
   proposedRemoveBankBlackList: string;
   proposer: string;
   approvalCount: number;
@@ -138,7 +144,7 @@ export default function Propose() {
     getProposedAddWalletBlackList();
     getProposedRemoveWalletBlackList();
     getProposedAddBankBlackList();
-    getProposedRemoveBankBlackLists;
+    getProposedRemoveBankBlackLists();
   }, []);
 
   const [proposedTransferFees, setProposedTransferFees] = useState<
@@ -306,9 +312,25 @@ export default function Propose() {
   const getProposedAddBankBlackList = async () => {
     const currentBlackListId = await getCurrentBankBlackListId(signer, 0);
     let proposedBlackLists = [];
+
     for (let i = 0; i < currentBlackListId; i++) {
       const account = await getProposedBankBlackList(signer, i);
-      proposedBlackLists.push(account);
+      if (account[0] === "") {
+        continue;
+      }
+      const res = await fetch(`/api/blackListBank?hashedAccount=${account[0]}`);
+      const data = await res.json();
+
+      proposedBlackLists.push({
+        proposer: account.proposer,
+        approvalCount: account.approvalCount,
+        rejectCount: account.rejectCount,
+        status: account.status,
+        proposedBankBlackList: account.proposedBankBlackList,
+        branchNo: data.res[0].branchNo,
+        accountTypeCode: data.res[0].accountTypeCode,
+        accountNo: data.res[0].accountNo,
+      });
     }
     setProposedAddBankBlackList(proposedBlackLists);
     return proposedBlackLists;
@@ -328,9 +350,26 @@ export default function Propose() {
     let proposedBlackLists = [];
     for (let i = 0; i < currentBlackListId; i++) {
       const account = await getProposedRemoveBankBlackList(signer, i);
-      proposedBlackLists.push(account);
+      console.log("account approvalCount", Number(account.approvalCount));
+      console.log("account reject", Number(account.rejectCount));
+      console.log("account status", Number(account.status));
+      if (account[0] === "") {
+        continue;
+      }
+      const res = await fetch(`/api/blackListBank?hashedAccount=${account[0]}`);
+      const data = await res.json();
+      proposedBlackLists.push({
+        proposer: account.proposer,
+        approvalCount: account.approvalCount,
+        rejectCount: account.rejectCount,
+        status: account.status,
+        proposedRemoveBankBlackList: account.proposedRemoveBankBlackList,
+        branchNo: data.res[0].branchNo,
+        accountTypeCode: data.res[0].accountTypeCode,
+        accountNo: data.res[0].accountNo,
+      });
     }
-    setProposedAddBankBlackList(proposedBlackLists);
+    setProposedRemoveBankBlackList(proposedBlackLists);
     return proposedBlackLists;
   };
 
@@ -446,7 +485,12 @@ export default function Propose() {
             return (
               <Card sx={{ maxWidth: 400, mt: "10px" }} key={_index}>
                 <CardContent>
-                  <Typography gutterBottom variant="body2" component="div">
+                  <Typography
+                    gutterBottom
+                    variant="body2"
+                    component="div"
+                    sx={{ wordWrap: "break-word", overflowWrap: "break-word" }}
+                  >
                     {String(_admin.proposedAdmin)}
                   </Typography>
                 </CardContent>
@@ -500,7 +544,12 @@ export default function Propose() {
             return (
               <Card sx={{ maxWidth: 400, mt: "10px" }} key={_index}>
                 <CardContent>
-                  <Typography gutterBottom variant="body2" component="div">
+                  <Typography
+                    gutterBottom
+                    variant="body2"
+                    component="div"
+                    sx={{ wordWrap: "break-word", overflowWrap: "break-word" }}
+                  >
                     {String(_admin.proposedRemovedAdmin)}
                   </Typography>
                 </CardContent>
@@ -554,7 +603,12 @@ export default function Propose() {
             return (
               <Card sx={{ maxWidth: 400, mt: "10px" }} key={_index}>
                 <CardContent>
-                  <Typography gutterBottom variant="body2" component="div">
+                  <Typography
+                    gutterBottom
+                    variant="body2"
+                    component="div"
+                    sx={{ wordWrap: "break-word", overflowWrap: "break-word" }}
+                  >
                     {String(_blacklist.proposedBlackListAddress)}
                   </Typography>
                 </CardContent>
@@ -608,7 +662,12 @@ export default function Propose() {
             return (
               <Card sx={{ maxWidth: 400, mt: "10px" }} key={_index}>
                 <CardContent>
-                  <Typography gutterBottom variant="body2" component="div">
+                  <Typography
+                    gutterBottom
+                    variant="body2"
+                    component="div"
+                    sx={{ wordWrap: "break-word", overflowWrap: "break-word" }}
+                  >
                     {String(_blacklist.proposedRemoveBlackListAddress)}
                   </Typography>
                 </CardContent>
@@ -664,8 +723,22 @@ export default function Propose() {
             return (
               <Card sx={{ maxWidth: 400, mt: "10px" }} key={_index}>
                 <CardContent>
+                  <Typography
+                    gutterBottom
+                    variant="body2"
+                    component="div"
+                    sx={{ wordWrap: "break-word", overflowWrap: "break-word" }}
+                  >
+                    Hashed Account: {String(_blacklist.proposedBankBlackList)}
+                  </Typography>
                   <Typography gutterBottom variant="body2" component="div">
-                    {String(_blacklist.proposedBankBlackList)}
+                    Branch No: {String(_blacklist.branchNo)}
+                  </Typography>
+                  <Typography gutterBottom variant="body2" component="div">
+                    Account Type Code: {String(_blacklist.accountTypeCode)}
+                  </Typography>
+                  <Typography gutterBottom variant="body2" component="div">
+                    Account No: {String(_blacklist.accountNo)}
                   </Typography>
                 </CardContent>
                 <CardActions>
@@ -716,10 +789,31 @@ export default function Propose() {
           </Typography>
           {proposedRemoveBankBlackList!.map((_blacklist, _index) => {
             return (
-              <Card sx={{ maxWidth: 400, mt: "10px" }} key={_index}>
+              <Card
+                sx={{
+                  maxWidth: 400,
+                  mt: "10px",
+                }}
+                key={_index}
+              >
                 <CardContent>
-                  <Typography gutterBottom variant="body2" component="div">
+                  <Typography
+                    gutterBottom
+                    variant="body2"
+                    component="div"
+                    sx={{ wordWrap: "break-word", overflowWrap: "break-word" }}
+                  >
+                    Hashed Account:{" "}
                     {String(_blacklist.proposedRemoveBankBlackList)}
+                  </Typography>
+                  <Typography gutterBottom variant="body2" component="div">
+                    Branch No: {String(_blacklist.branchNo)}
+                  </Typography>
+                  <Typography gutterBottom variant="body2" component="div">
+                    Account Type Code: {String(_blacklist.accountTypeCode)}
+                  </Typography>
+                  <Typography gutterBottom variant="body2" component="div">
+                    Account No: {String(_blacklist.accountNo)}
                   </Typography>
                 </CardContent>
                 <CardActions>

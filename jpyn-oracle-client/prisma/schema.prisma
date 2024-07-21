@@ -23,3 +23,12 @@ model Bank {
   accountNo       String
   createdAt       DateTime @default(now())
 }
+
+model BlackListBankAccount {
+  id              Int      @default(autoincrement()) @id
+  hashedAccount   String   @unique
+  branchNo        String
+  accountTypeCode String
+  accountNo       String
+  createdAt       DateTime @default(now())
+}
