@@ -8,7 +8,7 @@ import {
   Button,
   Modal,
 } from "@mui/material";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ChainContext } from "@/components/ChainContext";
 import { ethers } from "ethers";
 
@@ -55,13 +55,21 @@ function a11yProps(index: number) {
 
 export default function Propose() {
   const {
-    currentAccount,
     signer,
     proposeTransferFee,
     proposeAdmin,
     proposeBlackListAddress,
     proposeBankBlackList,
+    isAdmin,
+    currentAccount,
+    getTotalVoters,
+    getMinApproval,
   } = useContext(ChainContext);
+  useEffect(() => {
+    isVoter();
+    reqTotalVoters();
+    reqMinApproval();
+  }, []);
   const [value, setValue] = useState(0);
 
   const [inputTransferFeeValue, setInputTransferFeeValue] = useState("");
@@ -140,8 +148,26 @@ export default function Propose() {
     setRemoveBankBlacklistCompleteOpen(true);
   const handleRemoveBankBlacklistCompleteClose = () =>
     setRemoveBankBlacklistCompleteOpen(false);
+  const [voter, setVoter] = useState(false);
+  const [totalVoters, setTotalVoters] = useState(0);
+  const [minApproval, setMinApproval] = useState(0);
 
   // ------------------------------------------------
+  const isVoter = async () => {
+    const voter = await isAdmin(signer, currentAccount);
+    setVoter(voter);
+  };
+
+  const reqTotalVoters = async () => {
+    const totalVoters = await getTotalVoters(signer);
+    setTotalVoters(totalVoters);
+  };
+
+  const reqMinApproval = async () => {
+    const minApproval = await getMinApproval(signer);
+    setMinApproval(minApproval);
+  };
+
   const handleInputTransferFeeChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -344,6 +370,12 @@ export default function Propose() {
       <Typography variant="h2" align="center" sx={{ mt: "20px", mb: "20px" }}>
         Propose
       </Typography>
+      <Typography>
+        Total Voters: {totalVoters} / Minimum Approval: {minApproval}
+      </Typography>
+      <Typography id="modal-modal-title" variant="h6" component="h2">
+        {voter ? "You are a proposer" : "You are not a proposer"}
+      </Typography>
       <Box sx={{ width: "100%", borderBottom: 1, borderColor: "divider" }}>
         <Tabs
           value={value}
@@ -352,8 +384,8 @@ export default function Propose() {
           centered
         >
           <Tab label="TRANSFER FEE" {...a11yProps(0)} />
-          <Tab label="ADD JPYN ADMIN" {...a11yProps(1)} />
-          <Tab label="REMOVE JPYN ADMIN" {...a11yProps(2)} />
+          <Tab label="ADD JPYN PROPOSER AND VOTER" {...a11yProps(1)} />
+          <Tab label="REMOVE JPYN PROPOSER AND VOTER" {...a11yProps(2)} />
           <Tab label="ADD WALLET BLACKLIST" {...a11yProps(3)} />
           <Tab label="REMOVE WALLET BLACKLIST" {...a11yProps(4)} />
           <Tab label="ADD BANK BLACKLIST" {...a11yProps(5)} />
@@ -407,7 +439,8 @@ export default function Propose() {
           sx={{ mt: "20px", mb: "20px", width: "400px" }}
         >
           <Typography>
-            Propose to add the wallet address as an admin of JPYN token.
+            Propose to add the wallet address as proposer and voter of JPYN
+            token.
           </Typography>
           <TextField
             label="NEW WALLET ADDRESS (ex. 0x1234567890)"
@@ -433,7 +466,7 @@ export default function Propose() {
         >
           <Box sx={style}>
             <Typography id="modal-modal-title" variant="h6" component="h2">
-              Proposed new wallet address as an admin of JPYN token
+              Proposed new wallet address as proposer and voter of JPYN token
             </Typography>
           </Box>
         </Modal>
@@ -447,7 +480,8 @@ export default function Propose() {
           sx={{ mt: "20px", mb: "20px", width: "400px" }}
         >
           <Typography>
-            Propose to remove the wallet address from the admin of JPYN token.
+            Propose to remove the wallet address from proposer and voter of JPYN
+            token.
           </Typography>
           <TextField
             label="REMOVED WALLET ADDRESS (ex. 0x1234567890)"
@@ -473,7 +507,8 @@ export default function Propose() {
         >
           <Box sx={style}>
             <Typography id="modal-modal-title" variant="h6" component="h2">
-              Proposed remove wallet address from the admin of JPYN token
+              Proposed remove wallet address from proposer and voter of JPYN
+              token
             </Typography>
           </Box>
         </Modal>

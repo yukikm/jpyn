@@ -246,6 +246,14 @@ contract JPYN is IERC20, ERC20Errors, CustomErrors {
         return _admins[sender];
     }
 
+    function getTotalVoters() public view blackListAddress returns (uint256) {
+        return _totalAdminCount;
+    }
+
+    function getMinApproval() public view blackListAddress returns (uint256) {
+        return _minApprovalCount;
+    }
+
     /**
     * @dev Propose a new transfer fee
     * @param _newTransferFee The new transfer fee to propose

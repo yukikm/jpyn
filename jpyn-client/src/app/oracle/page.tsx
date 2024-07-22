@@ -9,7 +9,7 @@ import {
   Button,
   Modal,
 } from "@mui/material";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ChainContext } from "@/components/ChainContext";
 
 const style = {
@@ -61,6 +61,8 @@ export default function Oracle() {
     removeOracleAdmin,
     addOracle,
     removeOracle,
+    getminOracleQuorum,
+    getTotalOracleCount,
   } = useContext(ChainContext);
   const [value, setValue] = useState(0);
 
@@ -88,6 +90,24 @@ export default function Oracle() {
     setOracleRemoveCompleteOpen(true);
   const handleOracleRemoveCompleteClose = () =>
     setOracleRemoveCompleteOpen(false);
+
+  const [minOracleQuorum, setMinOracleQuorum] = useState(0);
+  const [totalOracleCount, setTotalOracleCount] = useState(0);
+
+  useEffect(() => {
+    reqMinOracleQuorum();
+    reqTotalOracleCount();
+  }, []);
+
+  const reqMinOracleQuorum = async () => {
+    const minOracleQuorum = await getminOracleQuorum(signer);
+    setMinOracleQuorum(minOracleQuorum);
+  };
+
+  const reqTotalOracleCount = async () => {
+    const totalOracleCount = await getTotalOracleCount(signer);
+    setTotalOracleCount(totalOracleCount);
+  };
 
   const handleInputAdminChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -165,6 +185,10 @@ export default function Oracle() {
     >
       <Typography variant="h2" align="center" sx={{ mt: "20px", mb: "20px" }}>
         Oracle
+      </Typography>
+      <Typography>
+        Min Oracle Quorum: {minOracleQuorum} / Total Oracle Count:{" "}
+        {totalOracleCount}
       </Typography>
       <Typography id="modal-modal-title" variant="h6" component="h2">
         {oracle ? "You are oracle." : "You are not oracle."}

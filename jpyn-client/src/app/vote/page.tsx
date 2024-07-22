@@ -10,8 +10,9 @@ import {
   Card,
   CardContent,
   CardActions,
+  Container,
 } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
+import { use, useContext, useEffect, useState } from "react";
 import { ChainContext } from "@/components/ChainContext";
 
 const style = {
@@ -72,7 +73,7 @@ type AddAdmin = {
 };
 
 type RemoveAdmin = {
-  proposedRemovedAdmin: string;
+  proposedAdmin: string;
   proposer: string;
   approvalCount: number;
   rejectCount: number;
@@ -120,6 +121,9 @@ type RemoveBankBlackList = {
 export default function Propose() {
   const {
     currentAccount,
+    isAdmin,
+    getTotalVoters,
+    getMinApproval,
     signer,
     getCurrentProposedTransferFeeId,
     getProposedTransferFee,
@@ -145,6 +149,9 @@ export default function Propose() {
     getProposedRemoveWalletBlackList();
     getProposedAddBankBlackList();
     getProposedRemoveBankBlackLists();
+    isVoter();
+    reqTotalVoters();
+    reqMinApproval();
   }, []);
 
   const [proposedTransferFees, setProposedTransferFees] = useState<
@@ -205,6 +212,25 @@ export default function Propose() {
     setRemoveBankBlackListVotedOpen(false);
 
   // ------------------------------------------------
+  const [voter, setVoter] = useState(false);
+  const [totalVoters, setTotalVoters] = useState(0);
+  const [minApproval, setMinApproval] = useState(0);
+
+  const isVoter = async () => {
+    const voter = await isAdmin(signer, currentAccount);
+    setVoter(voter);
+  };
+
+  const reqTotalVoters = async () => {
+    const totalVoters = await getTotalVoters(signer);
+    setTotalVoters(totalVoters);
+  };
+
+  const reqMinApproval = async () => {
+    const minApproval = await getMinApproval(signer);
+    setMinApproval(minApproval);
+  };
+
   const getProposedTransferFees = async () => {
     const currentTransferFeeId = await getCurrentProposedTransferFeeId(signer);
     let proposedTransferFees = [];
@@ -212,7 +238,6 @@ export default function Propose() {
       const transferFee = await getProposedTransferFee(signer, i);
       proposedTransferFees.push(transferFee);
     }
-    console.log(proposedTransferFees);
     setProposedTransferFees(proposedTransferFees);
     return proposedTransferFees;
   };
@@ -350,9 +375,6 @@ export default function Propose() {
     let proposedBlackLists = [];
     for (let i = 0; i < currentBlackListId; i++) {
       const account = await getProposedRemoveBankBlackList(signer, i);
-      console.log("account approvalCount", Number(account.approvalCount));
-      console.log("account reject", Number(account.rejectCount));
-      console.log("account status", Number(account.status));
       if (account[0] === "") {
         continue;
       }
@@ -396,6 +418,13 @@ export default function Propose() {
       <Typography variant="h2" align="center" sx={{ mt: "20px", mb: "20px" }}>
         Vote
       </Typography>
+      <Typography>
+        Total Voters: {totalVoters} / Minimum Approval: {minApproval}
+      </Typography>
+
+      <Typography id="modal-modal-title" variant="h6" component="h2">
+        {voter ? "You are a voter" : "You are not a voter"}
+      </Typography>
       <Box sx={{ width: "100%", borderBottom: 1, borderColor: "divider" }}>
         <Tabs
           value={value}
@@ -404,8 +433,8 @@ export default function Propose() {
           centered
         >
           <Tab label="TRANSFER FEE" {...a11yProps(0)} />
-          <Tab label="ADD JPYN ADMIN" {...a11yProps(1)} />
-          <Tab label="REMOVE JPYN ADMIN" {...a11yProps(2)} />
+          <Tab label="ADD JPYN PROPOSER AND VOTER" {...a11yProps(1)} />
+          <Tab label="REMOVE JPYN PROPOSER AND VOTER" {...a11yProps(2)} />
           <Tab label="ADD WALLET BLACKLIST" {...a11yProps(3)} />
           <Tab label="REMOVE WALLET BLACKLIST" {...a11yProps(4)} />
           <Tab label="ADD BANK BLACKLIST" {...a11yProps(5)} />
@@ -429,22 +458,74 @@ export default function Propose() {
           </Typography>
           {proposedTransferFees!.map((_transferFee, _index) => {
             return (
-              <Card sx={{ maxWidth: 345, mt: "10px" }} key={_index}>
+              <Card
+                sx={{
+                  maxWidth: 345,
+                  mt: "10px",
+                  borderColor: "divider",
+                  borderWidth: 1,
+                  borderStyle: "solid",
+                  boxShadow: "none",
+                }}
+                key={_index}
+              >
                 <CardContent>
-                  <Typography gutterBottom variant="h5" component="div">
+                  {Number(_transferFee.status) === 0 ? (
+                    <></>
+                  ) : (
+                    <Typography
+                      gutterBottom
+                      variant="h4"
+                      component="div"
+                      sx={{ textAlign: "center" }}
+                    >
+                      Ended
+                    </Typography>
+                  )}
+                  <Typography
+                    gutterBottom
+                    variant="h6"
+                    component="div"
+                    sx={{
+                      textAlign: "center",
+                      wordWrap: "break-word",
+                      overflowWrap: "break-word",
+                    }}
+                  >
                     {Number(_transferFee.proposedTransferFee)} JPYN
                   </Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Typography component="span" color="green">
+                      AGREE {Number(_transferFee.approvalCount)}
+                    </Typography>{" "}
+                    /{" "}
+                    <Typography component="span" color="error">
+                      DISAGREE {Number(_transferFee.rejectCount)}
+                    </Typography>
+                  </Box>
                 </CardContent>
-                <CardActions>
+                <CardActions style={{ justifyContent: "center" }}>
                   <Button
                     size="small"
+                    variant="contained"
+                    color="success"
                     onClick={() => vProposedTransferFee(_index, true)}
+                    disabled={Number(_transferFee.status) !== 0}
                   >
                     Agree
                   </Button>
                   <Button
                     size="small"
+                    variant="contained"
+                    color="error"
                     onClick={() => vProposedTransferFee(_index, false)}
+                    disabled={Number(_transferFee.status) !== 0}
                   >
                     Disagree
                   </Button>
@@ -472,38 +553,85 @@ export default function Propose() {
           flexDirection="column"
           justifyContent="center"
           alignItems="center"
-          sx={{ mt: "20px", mb: "20px", width: "400px" }}
+          sx={{ mt: "20px", mb: "20px", width: "500px" }}
         >
           <Typography
             variant="h5"
             align="center"
             sx={{ mt: "20px", mb: "20px" }}
           >
-            Proposed add jpyn admin
+            Proposed add jpyn proposer and voter
           </Typography>
           {proposedAddAdmin!.map((_admin, _index) => {
             return (
-              <Card sx={{ maxWidth: 400, mt: "10px" }} key={_index}>
+              <Card
+                sx={{
+                  maxWidth: 450,
+                  mt: "10px",
+                  borderColor: "divider",
+                  borderWidth: 1,
+                  borderStyle: "solid",
+                  boxShadow: "none",
+                }}
+                key={_index}
+              >
                 <CardContent>
+                  {Number(_admin.status) === 0 ? (
+                    <></>
+                  ) : (
+                    <Typography
+                      gutterBottom
+                      variant="h4"
+                      component="div"
+                      sx={{ textAlign: "center" }}
+                    >
+                      Ended
+                    </Typography>
+                  )}
                   <Typography
                     gutterBottom
-                    variant="body2"
+                    variant="body1"
                     component="div"
-                    sx={{ wordWrap: "break-word", overflowWrap: "break-word" }}
+                    sx={{
+                      textAlign: "center",
+                      wordWrap: "break-word",
+                      overflowWrap: "break-word",
+                    }}
                   >
                     {String(_admin.proposedAdmin)}
                   </Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Typography component="span" color="green">
+                      AGREE {Number(_admin.approvalCount)}
+                    </Typography>
+                    /
+                    <Typography component="span" color="error">
+                      DISAGREE {Number(_admin.rejectCount)}
+                    </Typography>
+                  </Box>
                 </CardContent>
-                <CardActions>
+                <CardActions style={{ justifyContent: "center" }}>
                   <Button
                     size="small"
+                    variant="contained"
+                    color="success"
                     onClick={() => vProposedAddAdmin(_index, true)}
+                    disabled={Number(_admin.status) !== 0}
                   >
                     Agree
                   </Button>
                   <Button
                     size="small"
+                    variant="contained"
+                    color="error"
                     onClick={() => vProposedAddAdmin(_index, false)}
+                    disabled={Number(_admin.status) !== 0}
                   >
                     Disagree
                   </Button>
@@ -531,38 +659,85 @@ export default function Propose() {
           flexDirection="column"
           justifyContent="center"
           alignItems="center"
-          sx={{ mt: "20px", mb: "20px", width: "400px" }}
+          sx={{ mt: "20px", mb: "20px", width: "500px" }}
         >
           <Typography
             variant="h5"
             align="center"
             sx={{ mt: "20px", mb: "20px" }}
           >
-            Proposed remove jpyn admin
+            Proposed remove jpyn proposer and voter
           </Typography>
           {proposedRemoveAdmin!.map((_admin, _index) => {
             return (
-              <Card sx={{ maxWidth: 400, mt: "10px" }} key={_index}>
+              <Card
+                sx={{
+                  maxWidth: 450,
+                  mt: "10px",
+                  borderColor: "divider",
+                  borderWidth: 1,
+                  borderStyle: "solid",
+                  boxShadow: "none",
+                }}
+                key={_index}
+              >
                 <CardContent>
+                  {Number(_admin.status) === 0 ? (
+                    <></>
+                  ) : (
+                    <Typography
+                      gutterBottom
+                      variant="h4"
+                      component="div"
+                      sx={{ textAlign: "center" }}
+                    >
+                      Ended
+                    </Typography>
+                  )}
                   <Typography
                     gutterBottom
-                    variant="body2"
+                    variant="body1"
                     component="div"
-                    sx={{ wordWrap: "break-word", overflowWrap: "break-word" }}
+                    sx={{
+                      textAlign: "center",
+                      wordWrap: "break-word",
+                      overflowWrap: "break-word",
+                    }}
                   >
-                    {String(_admin.proposedRemovedAdmin)}
+                    {String(_admin.proposedAdmin)}
                   </Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Typography component="span" color="green">
+                      AGREE {Number(_admin.approvalCount)}
+                    </Typography>
+                    /
+                    <Typography component="span" color="error">
+                      DISAGREE {Number(_admin.rejectCount)}
+                    </Typography>
+                  </Box>
                 </CardContent>
-                <CardActions>
+                <CardActions style={{ justifyContent: "center" }}>
                   <Button
                     size="small"
+                    variant="contained"
+                    color="success"
                     onClick={() => vProposedRemoveAdmin(_index, true)}
+                    disabled={Number(_admin.status) !== 0}
                   >
                     Agree
                   </Button>
                   <Button
                     size="small"
+                    variant="contained"
+                    color="error"
                     onClick={() => vProposedRemoveAdmin(_index, false)}
+                    disabled={Number(_admin.status) !== 0}
                   >
                     Disagree
                   </Button>
@@ -590,7 +765,7 @@ export default function Propose() {
           flexDirection="column"
           justifyContent="center"
           alignItems="center"
-          sx={{ mt: "20px", mb: "20px", width: "400px" }}
+          sx={{ mt: "20px", mb: "20px", width: "500px" }}
         >
           <Typography
             variant="h5"
@@ -601,27 +776,74 @@ export default function Propose() {
           </Typography>
           {proposedAddWalletBlackList!.map((_blacklist, _index) => {
             return (
-              <Card sx={{ maxWidth: 400, mt: "10px" }} key={_index}>
+              <Card
+                sx={{
+                  maxWidth: 450,
+                  mt: "10px",
+                  borderColor: "divider",
+                  borderWidth: 1,
+                  borderStyle: "solid",
+                  boxShadow: "none",
+                }}
+                key={_index}
+              >
                 <CardContent>
+                  {Number(_blacklist.status) === 0 ? (
+                    <></>
+                  ) : (
+                    <Typography
+                      gutterBottom
+                      variant="h4"
+                      component="div"
+                      sx={{ textAlign: "center" }}
+                    >
+                      Ended
+                    </Typography>
+                  )}
                   <Typography
                     gutterBottom
-                    variant="body2"
+                    variant="body1"
                     component="div"
-                    sx={{ wordWrap: "break-word", overflowWrap: "break-word" }}
+                    sx={{
+                      textAlign: "center",
+                      wordWrap: "break-word",
+                      overflowWrap: "break-word",
+                    }}
                   >
                     {String(_blacklist.proposedBlackListAddress)}
                   </Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Typography component="span" color="green">
+                      AGREE {Number(_blacklist.approvalCount)}
+                    </Typography>
+                    /
+                    <Typography component="span" color="error">
+                      DISAGREE {Number(_blacklist.rejectCount)}
+                    </Typography>
+                  </Box>
                 </CardContent>
-                <CardActions>
+                <CardActions style={{ justifyContent: "center" }}>
                   <Button
                     size="small"
+                    variant="contained"
+                    color="success"
                     onClick={() => vProposedAddWalletBlackList(_index, true)}
+                    disabled={Number(_blacklist.status) !== 0}
                   >
                     Agree
                   </Button>
                   <Button
                     size="small"
+                    variant="contained"
+                    color="error"
                     onClick={() => vProposedAddWalletBlackList(_index, false)}
+                    disabled={Number(_blacklist.status) !== 0}
                   >
                     Disagree
                   </Button>
@@ -649,7 +871,7 @@ export default function Propose() {
           flexDirection="column"
           justifyContent="center"
           alignItems="center"
-          sx={{ mt: "20px", mb: "20px", width: "400px" }}
+          sx={{ mt: "20px", mb: "20px", width: "500px" }}
         >
           <Typography
             variant="h5"
@@ -660,29 +882,76 @@ export default function Propose() {
           </Typography>
           {proposedRemoveWalletBlackList!.map((_blacklist, _index) => {
             return (
-              <Card sx={{ maxWidth: 400, mt: "10px" }} key={_index}>
+              <Card
+                sx={{
+                  maxWidth: 450,
+                  mt: "10px",
+                  borderColor: "divider",
+                  borderWidth: 1,
+                  borderStyle: "solid",
+                  boxShadow: "none",
+                }}
+                key={_index}
+              >
                 <CardContent>
+                  {Number(_blacklist.status) === 0 ? (
+                    <></>
+                  ) : (
+                    <Typography
+                      gutterBottom
+                      variant="h4"
+                      component="div"
+                      sx={{ textAlign: "center" }}
+                    >
+                      Ended
+                    </Typography>
+                  )}
                   <Typography
                     gutterBottom
-                    variant="body2"
+                    variant="body1"
                     component="div"
-                    sx={{ wordWrap: "break-word", overflowWrap: "break-word" }}
+                    sx={{
+                      textAlign: "center",
+                      wordWrap: "break-word",
+                      overflowWrap: "break-word",
+                    }}
                   >
                     {String(_blacklist.proposedRemoveBlackListAddress)}
                   </Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Typography component="span" color="green">
+                      AGREE {Number(_blacklist.approvalCount)}
+                    </Typography>
+                    /
+                    <Typography component="span" color="error">
+                      DISAGREE {Number(_blacklist.rejectCount)}
+                    </Typography>
+                  </Box>
                 </CardContent>
-                <CardActions>
+                <CardActions style={{ justifyContent: "center" }}>
                   <Button
                     size="small"
+                    variant="contained"
+                    color="success"
                     onClick={() => vProposedRemoveWalletBlackList(_index, true)}
+                    disabled={Number(_blacklist.status) !== 0}
                   >
                     Agree
                   </Button>
                   <Button
                     size="small"
+                    variant="contained"
+                    color="error"
                     onClick={() =>
                       vProposedRemoveWalletBlackList(_index, false)
                     }
+                    disabled={Number(_blacklist.status) !== 0}
                   >
                     Disagree
                   </Button>
@@ -710,7 +979,7 @@ export default function Propose() {
           flexDirection="column"
           justifyContent="center"
           alignItems="center"
-          sx={{ mt: "20px", mb: "20px", width: "400px" }}
+          sx={{ mt: "20px", mb: "20px", width: "500px" }}
         >
           <Typography
             variant="h5"
@@ -721,8 +990,30 @@ export default function Propose() {
           </Typography>
           {proposedAddBankBlackList!.map((_blacklist, _index) => {
             return (
-              <Card sx={{ maxWidth: 400, mt: "10px" }} key={_index}>
+              <Card
+                sx={{
+                  maxWidth: 450,
+                  mt: "10px",
+                  borderColor: "divider",
+                  borderWidth: 1,
+                  borderStyle: "solid",
+                  boxShadow: "none",
+                }}
+                key={_index}
+              >
                 <CardContent>
+                  {Number(_blacklist.status) === 0 ? (
+                    <></>
+                  ) : (
+                    <Typography
+                      gutterBottom
+                      variant="h4"
+                      component="div"
+                      sx={{ textAlign: "center" }}
+                    >
+                      Ended
+                    </Typography>
+                  )}
                   <Typography
                     gutterBottom
                     variant="body2"
@@ -740,17 +1031,38 @@ export default function Propose() {
                   <Typography gutterBottom variant="body2" component="div">
                     Account No: {String(_blacklist.accountNo)}
                   </Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Typography component="span" color="green">
+                      AGREE {Number(_blacklist.approvalCount)}
+                    </Typography>
+                    /
+                    <Typography component="span" color="error">
+                      DISAGREE {Number(_blacklist.rejectCount)}
+                    </Typography>
+                  </Box>
                 </CardContent>
-                <CardActions>
+                <CardActions style={{ justifyContent: "center" }}>
                   <Button
                     size="small"
+                    variant="contained"
+                    color="success"
                     onClick={() => vProposedAddBankBlackList(_index, true)}
+                    disabled={Number(_blacklist.status) !== 0}
                   >
                     Agree
                   </Button>
                   <Button
                     size="small"
+                    variant="contained"
+                    color="error"
                     onClick={() => vProposedAddBankBlackList(_index, false)}
+                    disabled={Number(_blacklist.status) !== 0}
                   >
                     Disagree
                   </Button>
@@ -778,7 +1090,7 @@ export default function Propose() {
           flexDirection="column"
           justifyContent="center"
           alignItems="center"
-          sx={{ mt: "20px", mb: "20px", width: "400px" }}
+          sx={{ mt: "20px", mb: "20px", width: "500px" }}
         >
           <Typography
             variant="h5"
@@ -791,12 +1103,28 @@ export default function Propose() {
             return (
               <Card
                 sx={{
-                  maxWidth: 400,
+                  maxWidth: 450,
                   mt: "10px",
+                  borderColor: "divider",
+                  borderWidth: 1,
+                  borderStyle: "solid",
+                  boxShadow: "none",
                 }}
                 key={_index}
               >
                 <CardContent>
+                  {Number(_blacklist.status) === 0 ? (
+                    <></>
+                  ) : (
+                    <Typography
+                      gutterBottom
+                      variant="h4"
+                      component="div"
+                      sx={{ textAlign: "center" }}
+                    >
+                      Ended
+                    </Typography>
+                  )}
                   <Typography
                     gutterBottom
                     variant="body2"
@@ -815,17 +1143,38 @@ export default function Propose() {
                   <Typography gutterBottom variant="body2" component="div">
                     Account No: {String(_blacklist.accountNo)}
                   </Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Typography component="span" color="green">
+                      AGREE {Number(_blacklist.approvalCount)}
+                    </Typography>
+                    /
+                    <Typography component="span" color="error">
+                      DISAGREE {Number(_blacklist.rejectCount)}
+                    </Typography>
+                  </Box>
                 </CardContent>
-                <CardActions>
+                <CardActions style={{ justifyContent: "center" }}>
                   <Button
                     size="small"
+                    variant="contained"
+                    color="success"
                     onClick={() => vProposedRemoveBankBlackList(_index, true)}
+                    disabled={Number(_blacklist.status) !== 0}
                   >
                     Agree
                   </Button>
                   <Button
                     size="small"
+                    variant="contained"
+                    color="error"
                     onClick={() => vProposedRemoveBankBlackList(_index, false)}
+                    disabled={Number(_blacklist.status) !== 0}
                   >
                     Disagree
                   </Button>

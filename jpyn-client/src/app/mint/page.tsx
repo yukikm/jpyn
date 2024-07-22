@@ -171,7 +171,6 @@ export default function Mint() {
           alignItems="center"
           sx={{ mt: "20px", mb: "20px", width: "400px" }}
         >
-          <Typography>Register bank account.</Typography>
           <Typography>
             Register bank account. Please ensure to register your bank account
             before Minting. You can Mint up to the balance of your registered
@@ -228,10 +227,9 @@ export default function Mint() {
           alignItems="center"
           sx={{ mt: "20px", mb: "20px", width: "400px" }}
         >
-          <Typography>Mint.</Typography>
           <Typography>
-            Please ensure to register your bank account before Minting. You can
-            Mint up to the balance of your registered bank account.
+            Mint. Please ensure to register your bank account before Minting.
+            You can Mint up to the balance of your registered bank account.
           </Typography>
           <Button
             variant="contained"

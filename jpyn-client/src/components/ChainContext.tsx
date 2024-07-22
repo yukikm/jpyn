@@ -163,48 +163,66 @@ export const ChainContextProvider = ({
     return res;
   }
 
-  async function _getminOracleQuorum(
-    signer: any,
-    address: string
-  ): Promise<number> {
+  async function _getminOracleQuorum(signer: any): Promise<number> {
     const contract = new ethers.Contract(
       ORACLE_CONTRACT_ADDRESS!,
       JpynOracle.abi,
       signer!
     );
-    const res = Number(await contract.getMinQuorum(address));
+    const res = Number(await contract.getMinQuorum());
     return res;
   }
 
-  async function getminOracleQuorum(
-    signer: any,
-    address: string
-  ): Promise<number> {
-    const res = await _getminOracleQuorum(signer, address);
+  async function getminOracleQuorum(signer: any): Promise<number> {
+    const res = await _getminOracleQuorum(signer);
     return res;
   }
 
-  async function _getTotalOracleCount(
-    signer: any,
-    address: string
-  ): Promise<number> {
+  async function _getTotalOracleCount(signer: any): Promise<number> {
     const contract = new ethers.Contract(
       ORACLE_CONTRACT_ADDRESS!,
       JpynOracle.abi,
       signer!
     );
-    const res = Number(await contract.getTotalOracleCount(address));
+    const res = Number(await contract.getTotalOracleCount());
     return res;
   }
 
-  async function getTotalOracleCount(
-    signer: any,
-    address: string
-  ): Promise<number> {
-    const res = await _getTotalOracleCount(signer, address);
+  async function getTotalOracleCount(signer: any): Promise<number> {
+    const res = await _getTotalOracleCount(signer);
     return res;
   }
   // --------------------------------------------------------- JPYN
+  async function _getTotalVoters(signer: any): Promise<number> {
+    const contract = new ethers.Contract(
+      JPYN_CONTRACT_ADDRESS!,
+      JPYN.abi,
+      signer!
+    );
+    const res = Number(await contract.getTotalVoters());
+    return res;
+  }
+
+  async function getTotalVoters(signer: any): Promise<number> {
+    const res = await _getTotalVoters(signer);
+    return res;
+  }
+
+  async function _getMinApproval(signer: any): Promise<number> {
+    const contract = new ethers.Contract(
+      JPYN_CONTRACT_ADDRESS!,
+      JPYN.abi,
+      signer!
+    );
+    const res = Number(await contract.getMinApproval());
+    return res;
+  }
+
+  async function getMinApproval(signer: any): Promise<number> {
+    const res = await _getMinApproval(signer);
+    return res;
+  }
+
   async function _getTransferFee(signer: any): Promise<number> {
     const contract = new ethers.Contract(
       JPYN_CONTRACT_ADDRESS!,
@@ -1050,6 +1068,8 @@ export const ChainContextProvider = ({
         isSafeTotalSupply,
         mint,
         burn,
+        getTotalVoters,
+        getMinApproval,
       }}
     >
       {children}
