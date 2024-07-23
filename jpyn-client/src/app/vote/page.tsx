@@ -433,8 +433,8 @@ export default function Propose() {
           centered
         >
           <Tab label="TRANSFER FEE" {...a11yProps(0)} />
-          <Tab label="ADD JPYN PROPOSER AND VOTER" {...a11yProps(1)} />
-          <Tab label="REMOVE JPYN PROPOSER AND VOTER" {...a11yProps(2)} />
+          <Tab label="ADD JPYN PROPOSER/VOTER" {...a11yProps(1)} />
+          <Tab label="REMOVE JPYN PROPOSER/VOTER" {...a11yProps(2)} />
           <Tab label="ADD WALLET BLACKLIST" {...a11yProps(3)} />
           <Tab label="REMOVE WALLET BLACKLIST" {...a11yProps(4)} />
           <Tab label="ADD BANK BLACKLIST" {...a11yProps(5)} />

@@ -22,13 +22,29 @@ log4js.configure({
 const db = new sqlite3.Database("./local.db", (err) => {
   if (err) {
     console.error(err.message);
+  } else {
+    console.log("Connected to the local SQLite database.");
   }
 });
 
-db.run(
-  "CREATE TABLE IF NOT EXISTS requestId (id INTEGER PRIMARY KEY AUTOINCREMENT, requestId INTEGER)"
-);
-db.run("INSERT INTO requestId (requestId) VALUES (0)");
+db.serialize(() => {
+  db.run(
+    "CREATE TABLE IF NOT EXISTS requestId (id INTEGER PRIMARY KEY AUTOINCREMENT, requestId INTEGER)",
+    (err) => {
+      if (err) {
+        console.error(err.message);
+      } else {
+        db.run("INSERT INTO requestId (requestId) VALUES (0)", (err) => {
+          if (err) {
+            console.error(err.message);
+          } else {
+            console.log("Initial requestId inserted.");
+          }
+        });
+      }
+    }
+  );
+});
 
 const prisma = new PrismaClient();
 const privateKey: any = process.env.PRIVATE_KEY;
