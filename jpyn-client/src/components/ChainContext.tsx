@@ -8,6 +8,7 @@ import JpynOracle from "../../artifacts/contracts/JpynOracle.sol/JpynOracle.json
 import JPYN from "../../artifacts/contracts/JPYN.sol/JPYN.json";
 import * as dotenv from "dotenv";
 import { get } from "http";
+import { stat } from "fs";
 dotenv.config();
 
 declare global {
@@ -34,7 +35,11 @@ export const ChainContextProvider = ({
   const [oracle, setOracle] = useState<boolean>(false);
   const [transferFee, setTransferFee] = useState<number>(0);
   const [gTotalSupply, setGTotalSupply] = useState<number>(0);
-  const [isJpynSafe, setIsJpynSafe] = useState(true);
+  const [isJpynSafe, setIsJpynSafe] = useState({
+    isSafe: true,
+    timestamp: new Date(),
+    status: 0,
+  });
   async function connectWallet() {
     const provider = await detectEthereumProvider({ silent: true });
     if (provider) {
@@ -75,7 +80,28 @@ export const ChainContextProvider = ({
     );
     const filter = contract.filters.isSafe();
     const events = await contract.queryFilter(filter);
-    return events[events.length - 1].args?.isSafe;
+    // return events[events.length - 1].args?.isSafe;
+    if (events.length > 0) {
+      const latestEvent = events[events.length - 1];
+      const blockNumber = latestEvent.blockNumber;
+      const block = await signer.provider.getBlock(blockNumber);
+      const eventTimestamp = block.timestamp;
+
+      // タイムスタンプをDateオブジェクトに変換
+      const eventDate = new Date(eventTimestamp * 1000);
+
+      return {
+        isSafe: latestEvent.args?.isSafe,
+        timestamp: eventDate,
+        status: 1,
+      };
+    } else {
+      return {
+        isSafe: true,
+        timestamp: new Date(),
+        status: 0,
+      };
+    }
   }
 
   async function _addOracle(signer: any, address: string) {

@@ -26,13 +26,39 @@ export default function Home() {
             <Typography variant="h3" align="center" sx={{ mt: "50px" }}>
               Is JPYN safe ?
             </Typography>
-            {isJpynSafe ? (
-              <Typography variant="h2" align="center" sx={{ color: "green" }}>
-                SAFE
-              </Typography>
+            {isJpynSafe.status === 1 ? (
+              <>
+                {isJpynSafe.isSafe ? (
+                  <>
+                    <Typography
+                      variant="h2"
+                      align="center"
+                      sx={{ color: "green" }}
+                    >
+                      SAFE
+                    </Typography>
+                    <Typography variant="body1" align="center">
+                      {isJpynSafe.timestamp}
+                    </Typography>
+                  </>
+                ) : (
+                  <>
+                    <Typography
+                      variant="h2"
+                      align="center"
+                      sx={{ color: "red" }}
+                    >
+                      UNSAFE
+                    </Typography>
+                    <Typography variant="body1" align="center">
+                      {isJpynSafe.timestamp}
+                    </Typography>
+                  </>
+                )}
+              </>
             ) : (
-              <Typography variant="h2" align="center" sx={{ color: "red" }}>
-                UNSAFE
+              <Typography variant="h2" align="center" sx={{ color: "green" }}>
+                -
               </Typography>
             )}
 
