@@ -38,7 +38,7 @@ export default function Home() {
                       SAFE
                     </Typography>
                     <Typography variant="body1" align="center">
-                      {isJpynSafe.timestamp}
+                      Evaluation Date: {String(isJpynSafe.timestamp)}
                     </Typography>
                   </>
                 ) : (
@@ -51,7 +51,7 @@ export default function Home() {
                       UNSAFE
                     </Typography>
                     <Typography variant="body1" align="center">
-                      {isJpynSafe.timestamp}
+                      Evaluation Date: {String(isJpynSafe.timestamp)}
                     </Typography>
                   </>
                 )}
