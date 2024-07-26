@@ -73,7 +73,7 @@ type AddAdmin = {
 };
 
 type RemoveAdmin = {
-  proposedAdmin: string;
+  proposedRemovedAdmin: string;
   proposer: string;
   approvalCount: number;
   rejectCount: number;
@@ -139,6 +139,7 @@ export default function Propose() {
     getProposedBankBlackList,
     voteProposedBankBlackList,
     getProposedRemoveBankBlackList,
+    getProposedRemovedAdmin,
   } = useContext(ChainContext);
   const [value, setValue] = useState(0);
   useEffect(() => {
@@ -276,7 +277,7 @@ export default function Propose() {
     const currentRemoveAdminId = await getCurrentProposedAdminId(signer, 1);
     let proposedRemoveAdmin = [];
     for (let i = 0; i < currentRemoveAdminId; i++) {
-      const removeAdmin = await getProposedAdmin(signer, i);
+      const removeAdmin = await getProposedRemovedAdmin(signer, i);
       proposedRemoveAdmin.push(removeAdmin);
     }
     setProposedRemoveAdmin(proposedRemoveAdmin);
@@ -704,7 +705,7 @@ export default function Propose() {
                       overflowWrap: "break-word",
                     }}
                   >
-                    {String(_admin.proposedAdmin)}
+                    {String(_admin.proposedRemovedAdmin)}
                   </Typography>
                   <Box
                     sx={{
