@@ -19,4 +19,5 @@ interface CustomErrors {
     error NotRegistered();
     error BankAccountFalse();
     error NotYourAddress();
+    error AlreadyMinted();
 }

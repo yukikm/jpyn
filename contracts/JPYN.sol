@@ -49,6 +49,7 @@ contract JPYN is IERC20, ERC20Errors, CustomErrors {
     mapping(string => address) private _addressToBank;
     mapping(string => uint256) private _bankAccountBalanceRequestIds;
     mapping(uint256 => string) private _hashedBankAccountIds;
+    mapping(address => bool) private _minted;
 
     uint256 private _totalSupply;
     string private _name;
@@ -828,10 +829,16 @@ contract JPYN is IERC20, ERC20Errors, CustomErrors {
         if (_bankBlackList[_hashedBankAccount]) revert BankBlackList();
         if (_addressToBank[_hashedBankAccount] == address(0)) revert NotRegistered();
         if (_addressToBank[_hashedBankAccount] != msg.sender) revert NotYourAddress();
+        if (_minted[msg.sender] == true) revert AlreadyMinted();
         uint256 _id = _bankAccountBalanceRequestIds[_hashedBankAccount];
         IJpynOracle.GetRequest memory res = _jpynOracle.getRequest(_id);
         if (res.accountStatus == 0 || res.accountStatus == 2) revert BankAccountFalse();
         _update(address(0), _addressToBank[_hashedBankAccount], res.accountBalance);
+        _minted[_addressToBank[_hashedBankAccount]] = true;
+    }
+
+    function getMinted () public view returns (bool) {
+        return _minted[msg.sender];
     }
 
     /**
