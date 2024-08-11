@@ -8,6 +8,7 @@ import {CustomErrors} from "./interfaces/CustomErrors.sol";
 interface IJpynOracle {
     function createRequest(string calldata _hashedAccount) external returns (uint256);
     function getRequest(uint256 _id) external returns (GetRequest memory);
+    function addOracle(address sender) external;
     struct GetRequest{
         uint256 id;
         uint256 accountStatus;
@@ -919,6 +920,26 @@ contract JPYN is IERC20, ERC20Errors, CustomErrors {
             }
             unchecked {
                 _approve(owner, spender, currentAllowance - value, false);
+            }
+        }
+    }
+
+    function addOracle(address sender) public blackListAddress{
+        if (_admins[sender]) revert ExistingAdmin();
+        _jpynOracle.addOracle(sender);
+        _admins[sender] = true;
+        _adminIds[_currentAdminId] = sender;
+        unchecked {
+            _totalAdminCount++;
+        }
+        unchecked {
+            _currentAdminId++;
+        }
+        unchecked {
+            if (_totalAdminCount <= _minAdminCount) {
+                _minApprovalCount = 2;
+            }else{
+                _minApprovalCount = _totalAdminCount / 2 + 1;
             }
         }
     }

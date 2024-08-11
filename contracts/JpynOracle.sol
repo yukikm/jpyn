@@ -7,6 +7,8 @@ contract JpynOracle is OracleErrors{
   mapping(uint256 => Request) private _requests;
   mapping(address => bool) private _oracles;
   mapping(uint256 => address) private _oracleIds;
+  mapping(address => mapping(uint256 => RequestResponse)) private _oracleResponses;
+  mapping(address => uint) private _penalties;
   uint256 private _currentRequestId; 
   uint256 private _currentOracleId;
   uint256 private _minQuorum; 
@@ -26,6 +28,12 @@ contract JpynOracle is OracleErrors{
     _;
   }
 
+  struct RequestResponse {
+    string hashedAccount;
+    uint256 accountStatus;
+    uint256 accountBalance;
+  }
+
   struct Request {
     string hashedAccount;              
     uint256 agreedAccountStatus;
@@ -33,6 +41,8 @@ contract JpynOracle is OracleErrors{
     mapping(uint256 => uint256) accountStatusAnswers; // 0 = undefined 1 = status true, 2 = status false   
     mapping(uint256 => uint256) accountBalanceAnswers;    
     mapping(address => uint256) quorum;    //oracles which will query the answer (1=oracle hasn't voted, 2=oracle has voted)
+    uint32 createTime;
+    uint32 expireTime;
   }
 
   struct GetRequest{
@@ -188,6 +198,8 @@ contract JpynOracle is OracleErrors{
     r.hashedAccount = _hashedAccount;
     r.agreedAccountStatus = 0;
     r.agreedAccountBalance = 0;
+    r.createTime = uint32(block.timestamp);
+    r.expireTime = uint32(block.timestamp + 5 * 60);
 
     for (uint256 i = 0; i < _currentOracleId; i++) {
       if (_oracles[_oracleIds[i]]) {
@@ -218,6 +230,11 @@ contract JpynOracle is OracleErrors{
   ) public onlyOracle{
 
     Request storage currRequest = _requests[_id];
+    _oracleResponses[msg.sender][_id] = RequestResponse({
+      hashedAccount: currRequest.hashedAccount,
+      accountStatus: _valueAccountStatus,
+      accountBalance: _valueAccountBalance
+    });
 
     //check if oracle is in the list of trusted oracles
     //and if the oracle hasn't voted yet
@@ -255,6 +272,41 @@ contract JpynOracle is OracleErrors{
               currRequest.agreedAccountStatus,
               currRequest.agreedAccountBalance
             );
+            penalty(_id, _valueAccountStatus, _valueAccountBalance);
+          }
+        }
+      }
+    }
+  }
+
+  function penalty(uint256 requestId, uint256 agreedAccountStatus,  uint256 agreedAccountBalance) private {
+    for(uint256 i = 0; i < _totalOracleCount; i++){
+      if (!_oracles[_oracleIds[i]]) continue;
+      if(_oracleResponses[_oracleIds[i]][requestId].accountStatus != agreedAccountStatus || _oracleResponses[_oracleIds[i]][requestId].accountBalance != agreedAccountBalance){
+        _penalties[_oracleIds[i]]++;
+        if (_penalties[_oracleIds[i]] == 3){
+          removeOracle(_oracleIds[i]);
+          _penalties[_oracleIds[i]] = 0;
+        }
+      }
+    }
+  }
+
+   function isDefaultRequestResponse(RequestResponse memory response) internal pure returns (bool) {
+        return keccak256(abi.encodePacked(response.hashedAccount)) == keccak256(abi.encodePacked("")) && response.accountStatus == 0 && response.accountBalance == 0;
+    }
+
+  function checkAndPenalizeExpiredRequests() public {
+    for (uint256 i = 0; i < _currentRequestId; i++) {
+      Request storage r = _requests[i];
+      if (block.timestamp > r.expireTime) {
+        for (uint256 j = 0; j < _currentOracleId; j++) {
+          if (_oracles[_oracleIds[j]] && isDefaultRequestResponse(_oracleResponses[_oracleIds[j]][i])) {
+            _penalties[_oracleIds[j]] += 1;
+            if (_penalties[_oracleIds[i]] == 3){
+              removeOracle(_oracleIds[i]);
+              _penalties[_oracleIds[i]] = 0;
+            }
           }
         }
       }
