@@ -1,4 +1,3 @@
-import { PrismaClient } from "@prisma/client";
 import { abi } from "../artifacts/contracts/JpynOracle.sol/JpynOracle.json";
 import * as dotenv from "dotenv";
 import { ethers } from "ethers";
@@ -46,7 +45,6 @@ db.serialize(() => {
   );
 });
 
-const prisma = new PrismaClient();
 const privateKey: any = process.env.PRIVATE_KEY;
 const contractAddress: any = process.env.ORACLE_CONTRACT_ADDRESS;
 
@@ -89,27 +87,23 @@ async function requestMufgAPI(bankAccount: string) {
   const todayDate =
     today.getDate() < 10 ? `0${today.getDate()}` : today.getDate();
   const formattedDate = `${today.getFullYear()}${todayMont}${todayDate}`;
-  const request = await axios.get(
-    `${process.env.MUFG_API}/${bankAccount}` ?? "",
-    {
-      headers: {
-        "X-IBM-Client-Id": `${process.env.MUFG_API_KEY}`,
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        "X-BTMU-Seq-No": `${formattedDate}-${generateRandomString()}`,
-      },
-    }
-  );
+  const request = await axios.get(`${process.env.MUFG_API}/${bankAccount}`, {
+    headers: {
+      "X-IBM-Client-Id": `${process.env.MUFG_API_KEY}`,
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      "X-BTMU-Seq-No": `${formattedDate}-${generateRandomString()}`,
+    },
+  });
   return request;
 }
 
 async function getBankAccount(hashedAccount: string) {
-  const bankAccount = await prisma.bank.findUnique({
-    where: {
-      hashedAccount,
-    },
-  });
-  return bankAccount;
+  const res = await fetch(
+    `${process.env.API_URL}/api/bank?hashedAccount=${hashedAccount}`
+  );
+  const data = await res.json();
+  return data.res;
 }
 
 async function updateRequestId(requestId: number) {

@@ -22,12 +22,22 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   const params = req.nextUrl.searchParams;
-  const query = params.get("address");
+  const address = params.get("address");
+  const hashedAccount = params.get("hashedAccount");
 
-  const res = await prisma.bank.findMany({
-    where: {
-      address: query!,
-    },
-  });
-  return NextResponse.json({ res: res });
+  if (!!address) {
+    const res = await prisma.bank.findMany({
+      where: {
+        address: address!,
+      },
+    });
+    return NextResponse.json({ res: res });
+  } else if (!!hashedAccount) {
+    const res = await prisma.bank.findMany({
+      where: {
+        hashedAccount: hashedAccount!,
+      },
+    });
+    return NextResponse.json({ res: res });
+  }
 }

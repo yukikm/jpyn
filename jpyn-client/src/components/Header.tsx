@@ -11,10 +11,9 @@ import { useRouter } from "next/navigation";
 import { Menu, MenuItem } from "@mui/material";
 
 export default function Header() {
-  const { currentAccount, connectWallet, admin, oracleAdmin, signer } =
+  const { currentAccount, connectWallet, admin, signer } =
     useContext(ChainContext);
   const router = useRouter();
-  console.log("signerHeader", signer);
   const displayAddress = currentAccount
     ? `${currentAccount.slice(0, 7)}...${currentAccount.slice(38)}`
     : "";
@@ -34,17 +33,15 @@ export default function Header() {
             >
               home
             </Button>
-            {oracleAdmin ? (
-              <Button
-                key="oracle"
-                onClick={() => router.push("/oracle")}
-                sx={{ my: 2, color: "white", display: "block" }}
-              >
-                oracle
-              </Button>
-            ) : (
-              <></>
-            )}
+
+            <Button
+              key="oracle"
+              onClick={() => router.push("/oracle")}
+              sx={{ my: 2, color: "white", display: "block" }}
+            >
+              oracle
+            </Button>
+
             {admin ? (
               <>
                 <Button

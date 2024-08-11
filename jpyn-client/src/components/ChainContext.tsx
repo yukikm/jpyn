@@ -30,7 +30,6 @@ export const ChainContextProvider = ({
 }: ChainContextProviderProps) => {
   const [currentAccount, setCurrentAccount] = useState<string>();
   const [signer, setSigner] = useState<Signer>();
-  const [oracleAdmin, setOracleAdmin] = useState<boolean>(false);
   const [admin, setAdmin] = useState<boolean>(false);
   const [oracle, setOracle] = useState<boolean>(false);
   const [transferFee, setTransferFee] = useState<number>(0);
@@ -52,8 +51,6 @@ export const ChainContextProvider = ({
 
       setCurrentAccount(_walletAddress);
       // signer
-      const isOracleAdmin = await _isOracleAdmin(signer, _walletAddress);
-      setOracleAdmin(isOracleAdmin);
       const isAdmin = await _isAdmin(signer, _walletAddress);
       setAdmin(isAdmin);
       const isOracle = await _isOracle(signer, _walletAddress);
@@ -130,32 +127,6 @@ export const ChainContextProvider = ({
     await _removeOracle(signer, address);
   }
 
-  async function _addOracleAdmin(signer: any, address: string) {
-    const contract = new ethers.Contract(
-      ORACLE_CONTRACT_ADDRESS!,
-      JpynOracle.abi,
-      signer!
-    );
-    await contract.addAdmin(address);
-  }
-
-  async function addOracleAdmin(signer: any, address: string) {
-    await _addOracleAdmin(signer, address);
-  }
-
-  async function _removeOracleAdmin(signer: any, address: string) {
-    const contract = new ethers.Contract(
-      ORACLE_CONTRACT_ADDRESS!,
-      JpynOracle.abi,
-      signer!
-    );
-    await contract.removeAdmin(address);
-  }
-
-  async function removeOracleAdmin(signer: any, address: string) {
-    await _removeOracleAdmin(signer, address);
-  }
-
   async function _isOracle(signer: any, address: string): Promise<boolean> {
     const contract = new ethers.Contract(
       ORACLE_CONTRACT_ADDRESS!,
@@ -168,24 +139,6 @@ export const ChainContextProvider = ({
 
   async function isOracle(signer: any, address: string): Promise<boolean> {
     const res = await _isOracle(signer, address);
-    return res;
-  }
-
-  async function _isOracleAdmin(
-    signer: any,
-    address: string
-  ): Promise<boolean> {
-    const contract = new ethers.Contract(
-      ORACLE_CONTRACT_ADDRESS!,
-      JpynOracle.abi,
-      signer!
-    );
-    const res = await contract.isAdmin(address);
-    return res;
-  }
-
-  async function isOracleAdmin(signer: any, address: string): Promise<boolean> {
-    const res = await _isOracleAdmin(signer, address);
     return res;
   }
 
@@ -1043,15 +996,11 @@ export const ChainContextProvider = ({
       value={{
         currentAccount,
         signer,
-        oracleAdmin,
         oracle,
         connectWallet,
         addOracle,
         removeOracle,
-        addOracleAdmin,
-        removeOracleAdmin,
         isOracle,
-        isOracleAdmin,
         getminOracleQuorum,
         getTotalOracleCount,
         // JPYN

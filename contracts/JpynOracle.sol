@@ -7,9 +7,6 @@ contract JpynOracle is OracleErrors{
   mapping(uint256 => Request) private _requests;
   mapping(address => bool) private _oracles;
   mapping(uint256 => address) private _oracleIds;
-  mapping(address => bool) private _admins;
-  uint256 private _totalAdminCount;
-  uint256 private _minAdminCount;
   uint256 private _currentRequestId; 
   uint256 private _currentOracleId;
   uint256 private _minQuorum; 
@@ -17,19 +14,11 @@ contract JpynOracle is OracleErrors{
   uint256 private _minOracleCount;
 
   constructor() {
-    _admins[_msgSender()] = true;
     _currentRequestId = 0;
     _currentOracleId = 0;
     _minQuorum = 0;
     _totalOracleCount = 0;
-    _totalAdminCount = 0;
-    _minAdminCount = 3;
     _minOracleCount = 3;
-  }
-
-  modifier onlyAdmin() {
-    if (!_admins[_msgSender()]) revert OnlyAdmin(_msgSender());
-    _;
   }
 
   modifier onlyOracle() {
@@ -44,7 +33,6 @@ contract JpynOracle is OracleErrors{
     mapping(uint256 => uint256) accountStatusAnswers; // 0 = undefined 1 = status true, 2 = status false   
     mapping(uint256 => uint256) accountBalanceAnswers;    
     mapping(address => uint256) quorum;    //oracles which will query the answer (1=oracle hasn't voted, 2=oracle has voted)
-    bool requested;
   }
 
   struct GetRequest{
@@ -69,7 +57,7 @@ contract JpynOracle is OracleErrors{
   * @dev Add an oracle to the list of trusted oracles.
   * @param sender The address of the oracle to add.
   */
-  function addOracle(address sender) public onlyAdmin{
+  function addOracle(address sender) public {
     if (_oracles[sender]) revert ExistingOracle(sender);
     _oracles[sender] = true;
     _oracleIds[_currentOracleId] = sender;
@@ -82,7 +70,7 @@ contract JpynOracle is OracleErrors{
   * @dev Remove an oracle from the list of trusted oracles.
   * @param sender The address of the oracle to remove.
   */
-  function removeOracle(address sender) public onlyAdmin{
+  function removeOracle(address sender) public {
     if (_totalOracleCount<=_minOracleCount) revert NotEnoughOracles(_totalOracleCount, _minOracleCount, sender);
     if (!_oracles[sender]) revert NotExistingOrracle(sender);
     _oracles[sender] = false;
@@ -91,48 +79,9 @@ contract JpynOracle is OracleErrors{
   }
 
   /**
-  * @dev Add an admin to the list of trusted admins.
-  * @param sender The address of the admin to add.
-  */
-  function addAdmin(address sender) public onlyAdmin{
-    if (_admins[sender]) revert ExistingAdmin(sender);
-    _admins[sender] = true;
-    _addAdminCount();
-  }
-
-  /**
-  * @dev Remove an admin from the list of trusted admins.
-  * @param sender The address of the admin to remove.
-  */
-  function removeAdmin(address sender) public onlyAdmin{
-    if (_totalAdminCount<=_minAdminCount) revert NotEnoughAdmins(_totalAdminCount, _minAdminCount, sender);
-    if (!_admins[sender]) revert NotExistingAdmin(sender);
-    _admins[sender] = false;
-    _minusAdminCount();
-  }
-
-  /**
-  * @dev Add an admin count.
-  */
-  function _addAdminCount() private onlyAdmin() {
-    unchecked {
-      _totalAdminCount++;
-    }
-  }
-
-  /**
-  * @dev Subtract an admin count.
-  */
-  function _minusAdminCount() private onlyAdmin(){
-    unchecked {
-      _totalAdminCount--;
-    }
-  }
-
-  /**
   * @dev Add an oracle id to the list of trusted oracles.
   */
-  function _addOracleId () private onlyAdmin{
+  function _addOracleId () private {
     unchecked {
       _currentOracleId++;
     }
@@ -141,7 +90,7 @@ contract JpynOracle is OracleErrors{
   /**
   * @dev Calculate the minimum quorum required for a request to be considered valid.
   */
-  function _calcurateMinQuorum () private onlyAdmin{
+  function _calcurateMinQuorum () private {
     unchecked {
       _minQuorum = (_totalOracleCount / 2) + 1;
     }
@@ -150,7 +99,7 @@ contract JpynOracle is OracleErrors{
   /**
   * @dev Add total oracle count.
   */
-  function _addTotalOracleCount () private onlyAdmin{
+  function _addTotalOracleCount () private {
     unchecked {
       _totalOracleCount++;
     }
@@ -159,7 +108,7 @@ contract JpynOracle is OracleErrors{
   /**
   * @dev Subtract total oracle count.
   */
-  function _minusTotalOracleCount () private onlyAdmin{
+  function _minusTotalOracleCount () private {
     unchecked {
       _totalOracleCount--;
     }
@@ -180,20 +129,13 @@ contract JpynOracle is OracleErrors{
   */
   function getRequest(uint256 _id) public view returns (GetRequest memory) {
     Request storage req = _requests[_id];
-    // if (req.requested) revert Requested();
     uint256 accountStatus = req.agreedAccountStatus;
     uint256 accountBalance = req.agreedAccountBalance;
-    // req.requested = true;
     return GetRequest({
       id: _id,
       accountStatus: accountStatus,
       accountBalance: accountBalance
     });
-  }
-
-  function updateRequested(uint256 _id) public {
-    Request storage req = _requests[_id];
-    req.requested = true;
   }
 
   /**
@@ -202,14 +144,6 @@ contract JpynOracle is OracleErrors{
   */
   function isOracle(address _sender) public view returns (bool) {
     return _oracles[_sender];
-  }
-
-  /**
-  * @dev Check if an address is an admin.
-  * @param _sender The address to check.
-  */
-  function isAdmin(address _sender) public view returns (bool) {
-    return _admins[_sender];
   }
 
   /**
@@ -254,7 +188,6 @@ contract JpynOracle is OracleErrors{
     r.hashedAccount = _hashedAccount;
     r.agreedAccountStatus = 0;
     r.agreedAccountBalance = 0;
-    r.requested = false;
 
     for (uint256 i = 0; i < _currentOracleId; i++) {
       if (_oracles[_oracleIds[i]]) {

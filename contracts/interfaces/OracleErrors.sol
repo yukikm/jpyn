@@ -10,5 +10,4 @@ interface OracleErrors {
     error NotExistingAdmin(address sender);
     error NotEnoughAdmins(uint256 totalAdminCount, uint256 minAdminCount, address sender);
     error NotEnoughOracles(uint256 totalOracleCount, uint256 minOracleCount, address sender);
-    error Requested();
 }
