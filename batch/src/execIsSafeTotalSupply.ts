@@ -1,4 +1,4 @@
-import { abi } from "../artifacts/contracts/JPYN.sol/JPYN.json";
+import { abi } from "../../artifacts/contracts/JPYN.sol/JPYN.json";
 import * as dotenv from "dotenv";
 import { ethers } from "ethers";
 import log4js from "log4js";
@@ -23,8 +23,8 @@ const wallet = new ethers.Wallet(privateKey, provider);
 
 const contract = new ethers.Contract(contractAddress, abi, wallet);
 
-async function requestIsSafe() {
-  await contract.requestIsSafeTotalSupply();
+async function execIsSafeTotalSupply() {
+  await contract.isSafeTotalSupply();
 }
 
-requestIsSafe();
+execIsSafeTotalSupply();

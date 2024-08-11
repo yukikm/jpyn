@@ -24,7 +24,6 @@ model Bank {
   createdAt       DateTime @default(now())
 }
 
-
 model BlackListBankAccount {
   id              Int      @default(autoincrement()) @id
   hashedAccount   String   @unique
