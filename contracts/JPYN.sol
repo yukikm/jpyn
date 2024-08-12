@@ -9,6 +9,7 @@ interface IJpynOracle {
     function createRequest(string calldata _hashedAccount) external returns (uint256);
     function getRequest(uint256 _id) external returns (GetRequest memory);
     function addOracle(address sender) external;
+    function removeOracle(address sender) external;
     struct GetRequest{
         uint256 id;
         uint256 accountStatus;
@@ -838,8 +839,12 @@ contract JPYN is IERC20, ERC20Errors, CustomErrors {
         _minted[_addressToBank[_hashedBankAccount]] = true;
     }
 
-    function getMinted () public view returns (bool) {
-        return _minted[msg.sender];
+    function getMinted (address sender) public view returns (bool) {
+        return _minted[sender];
+    }
+
+    function getRequestId (string memory _hashedBankAccount) public view returns (uint256) {
+        return _bankAccountBalanceRequestIds[_hashedBankAccount];
     }
 
     /**
@@ -937,6 +942,22 @@ contract JPYN is IERC20, ERC20Errors, CustomErrors {
         }
         unchecked {
             if (_totalAdminCount <= _minAdminCount) {
+                _minApprovalCount = 2;
+            }else{
+                _minApprovalCount = _totalAdminCount / 2 + 1;
+            }
+        }
+    }
+
+    function removeOracle(address sender) private blackListAddress notEnoughAdmins{
+        if (!_admins[sender]) revert NotExistingAdmin();
+        _jpynOracle.removeOracle(sender);
+        _admins[sender] = false;
+        unchecked {
+            _totalAdminCount--;
+        }
+        unchecked {
+            if (_totalAdminCount < _minAdminCount) {
                 _minApprovalCount = 2;
             }else{
                 _minApprovalCount = _totalAdminCount / 2 + 1;
