@@ -9,7 +9,7 @@ import {
   Button,
   Modal,
 } from "@mui/material";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ChainContext } from "@/components/ChainContext";
 import { ethers } from "ethers";
 
@@ -55,14 +55,22 @@ function a11yProps(index: number) {
 }
 
 export default function Mint() {
-  const { currentAccount, registerAddressToBank, mint, signer } =
-    useContext(ChainContext);
+  const {
+    currentAccount,
+    registerAddressToBank,
+    mint,
+    signer,
+    getRequestId,
+    getMinted,
+    getRequest,
+  } = useContext(ChainContext);
   const [value, setValue] = useState(0);
 
   const [inputBranchNoChange, setInputBranchNoChange] = useState("");
   const [inputAccountTypeCodeChange, setInputAccountTypeCodeChange] =
     useState("");
   const [inputAccountNoChange, setInputAccountNoChange] = useState("");
+  const [minted, setMinted] = useState(true);
 
   const [accountRegisterCompleteOpen, setAccountRegisterCompleteOpen] =
     useState(false);
@@ -72,8 +80,28 @@ export default function Mint() {
     setAccountRegisterCompleteOpen(false);
 
   const [mintCompleteOpen, setMintCompleteOpen] = useState(false);
-  const handleMintCompleteOpen = () => setAccountRegisterCompleteOpen(true);
-  const handleMintCompleteClose = () => setAccountRegisterCompleteOpen(false);
+  const handleMintCompleteOpen = () => setMintCompleteOpen(true);
+  const handleMintCompleteClose = () => setMintCompleteOpen(false);
+  useEffect(() => {
+    const isMint = async () => {
+      try {
+        const isMinted = await getMinted(signer, currentAccount);
+        const res = await fetch(`/api/bank?address=${currentAccount}`);
+        const data = await res.json();
+        const hashedAccount = data.res[0].hashedAccount;
+        const requestId = await getRequestId(signer, hashedAccount);
+        console.log("is mint request id", Number(requestId));
+        const request = await getRequest(signer, Number(requestId));
+        console.log("is mint request", request);
+        if (request.accountStatus === 1 && !isMinted) {
+          setMinted(false);
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    setInterval(isMint, 30000);
+  }, []);
 
   const handleInputBranchNoChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -133,6 +161,7 @@ export default function Mint() {
       const data = await res.json();
       console.log(data.res[0].hashedAccount);
       await mint(signer, data.res[0].hashedAccount);
+      setMinted(true);
       handleMintCompleteOpen();
     } catch (e) {
       alert(e);
@@ -142,6 +171,7 @@ export default function Mint() {
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
+
   return (
     <Box
       display="flex"
@@ -236,6 +266,7 @@ export default function Mint() {
             color="primary"
             onClick={mintJpyn}
             sx={{ mt: "20px" }}
+            disabled={minted}
           >
             MINT
           </Button>

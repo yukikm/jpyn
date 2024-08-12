@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { PrismaClient } from "../../../../../jpyn-oracle-client/node_modules/.prisma/client";
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 

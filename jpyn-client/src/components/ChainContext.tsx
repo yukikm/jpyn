@@ -142,6 +142,35 @@ export const ChainContextProvider = ({
     return res;
   }
 
+  async function _getRequest(
+    signer: any,
+    id: number
+  ): Promise<{
+    id: number;
+    accountStatus: number;
+    accountBalance: number;
+  }> {
+    const contract = new ethers.Contract(
+      ORACLE_CONTRACT_ADDRESS!,
+      JpynOracle.abi,
+      signer!
+    );
+    const res = await contract.getRequest(id);
+    return res;
+  }
+
+  async function getRequest(
+    signer: any,
+    id: number
+  ): Promise<{
+    id: number;
+    accountStatus: number;
+    accountBalance: number;
+  }> {
+    const res = await _getRequest(signer, id);
+    return res;
+  }
+
   async function _getminOracleQuorum(signer: any): Promise<number> {
     const contract = new ethers.Contract(
       ORACLE_CONTRACT_ADDRESS!,
@@ -1004,30 +1033,40 @@ export const ChainContextProvider = ({
     await _removeJpynOracle(signer, sender);
   }
 
-  async function _getMinted(signer: any, sender: string) {
+  async function _getMinted(signer: any, sender: string): Promise<boolean> {
     const contract = new ethers.Contract(
       JPYN_CONTRACT_ADDRESS!,
       JPYN.abi,
       signer!
     );
-    await contract.getMinted(sender);
+    const res = await contract.getMinted(sender);
+    return res;
   }
 
-  async function getMinted(signer: any, sender: string) {
-    await _getMinted(signer, sender);
+  async function getMinted(signer: any, sender: string): Promise<boolean> {
+    const res = await _getMinted(signer, sender);
+    return res;
   }
 
-  async function _getRequestId(signer: any, hashedBankAccount: string) {
+  async function _getRequestId(
+    signer: any,
+    hashedBankAccount: string
+  ): Promise<number> {
     const contract = new ethers.Contract(
       JPYN_CONTRACT_ADDRESS!,
       JPYN.abi,
       signer!
     );
-    await contract.getRequestId(hashedBankAccount);
+    const res = await contract.getRequestId(hashedBankAccount);
+    return res;
   }
 
-  async function getRequestId(signer: any, hashedBankAccount: string) {
-    await _getRequestId(signer, hashedBankAccount);
+  async function getRequestId(
+    signer: any,
+    hashedBankAccount: string
+  ): Promise<number> {
+    const res = await _getRequestId(signer, hashedBankAccount);
+    return res;
   }
 
   async function _burn(signer: any, amount: number) {
@@ -1101,6 +1140,7 @@ export const ChainContextProvider = ({
         removeJpynOracle,
         getMinted,
         getRequestId,
+        getRequest,
       }}
     >
       {children}
