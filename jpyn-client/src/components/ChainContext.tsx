@@ -978,6 +978,58 @@ export const ChainContextProvider = ({
     await _mint(signer, hashedBankAccount);
   }
 
+  async function _addJpynOracle(signer: any, sender: string) {
+    const contract = new ethers.Contract(
+      JPYN_CONTRACT_ADDRESS!,
+      JPYN.abi,
+      signer!
+    );
+    await contract.addOracle(sender);
+  }
+
+  async function addJpynOracle(signer: any, sender: string) {
+    await _addJpynOracle(signer, sender);
+  }
+
+  async function _removeJpynOracle(signer: any, sender: string) {
+    const contract = new ethers.Contract(
+      JPYN_CONTRACT_ADDRESS!,
+      JPYN.abi,
+      signer!
+    );
+    await contract.removeOracle(sender);
+  }
+
+  async function removeJpynOracle(signer: any, sender: string) {
+    await _removeJpynOracle(signer, sender);
+  }
+
+  async function _getMinted(signer: any, sender: string) {
+    const contract = new ethers.Contract(
+      JPYN_CONTRACT_ADDRESS!,
+      JPYN.abi,
+      signer!
+    );
+    await contract.getMinted(sender);
+  }
+
+  async function getMinted(signer: any, sender: string) {
+    await _getMinted(signer, sender);
+  }
+
+  async function _getRequestId(signer: any, hashedBankAccount: string) {
+    const contract = new ethers.Contract(
+      JPYN_CONTRACT_ADDRESS!,
+      JPYN.abi,
+      signer!
+    );
+    await contract.getRequestId(hashedBankAccount);
+  }
+
+  async function getRequestId(signer: any, hashedBankAccount: string) {
+    await _getRequestId(signer, hashedBankAccount);
+  }
+
   async function _burn(signer: any, amount: number) {
     const contract = new ethers.Contract(
       JPYN_CONTRACT_ADDRESS!,
@@ -1045,6 +1097,10 @@ export const ChainContextProvider = ({
         burn,
         getTotalVoters,
         getMinApproval,
+        addJpynOracle,
+        removeJpynOracle,
+        getMinted,
+        getRequestId,
       }}
     >
       {children}

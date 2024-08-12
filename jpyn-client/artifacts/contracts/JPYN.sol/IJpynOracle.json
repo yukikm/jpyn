@@ -6,6 +6,19 @@
     {
       "inputs": [
         {
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        }
+      ],
+      "name": "addOracle",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
           "internalType": "string",
           "name": "_hashedAccount",
           "type": "string"
@@ -55,6 +68,19 @@
           "type": "tuple"
         }
       ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        }
+      ],
+      "name": "removeOracle",
+      "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
     }

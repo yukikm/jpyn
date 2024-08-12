@@ -5,6 +5,11 @@
   "abi": [
     {
       "inputs": [],
+      "name": "AlreadyMinted",
+      "type": "error"
+    },
+    {
+      "inputs": [],
       "name": "AlreadyRegistered",
       "type": "error"
     },

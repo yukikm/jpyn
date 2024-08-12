@@ -110,11 +110,6 @@
       ],
       "name": "OnlyOracle",
       "type": "error"
-    },
-    {
-      "inputs": [],
-      "name": "Requested",
-      "type": "error"
     }
   ],
   "bytecode": "0x",

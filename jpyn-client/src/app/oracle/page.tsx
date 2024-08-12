@@ -57,32 +57,19 @@ export default function Oracle() {
   const {
     oracle,
     signer,
-    addOracleAdmin,
-    removeOracleAdmin,
-    addOracle,
-    removeOracle,
+    addJpynOracle,
+    removeJpynOracle,
     getminOracleQuorum,
     getTotalOracleCount,
   } = useContext(ChainContext);
   const [value, setValue] = useState(0);
 
-  const [inputAdminValue, setInputAdminValue] = useState("");
   const [inputOracleValue, setInputOracleValue] = useState("");
-  const [inputRemoveAdminValue, setInputRemoveAdminValue] = useState("");
   const [inputRemoveOracleValue, setInputRemoveOracleValue] = useState("");
-
-  const [adminCompleteOpen, setAdminCompleteOpen] = useState(false);
-  const handleAdminCompleteOpen = () => setAdminCompleteOpen(true);
-  const handleAdminCompleteClose = () => setAdminCompleteOpen(false);
 
   const [oracleCompleteOpen, setOracleCompleteOpen] = useState(false);
   const handleOracleCompleteOpen = () => setOracleCompleteOpen(true);
   const handleOracleCompleteClose = () => setOracleCompleteOpen(false);
-
-  const [adminRemoveCompleteOpen, setAdminRemoveCompleteOpen] = useState(false);
-  const handleRemoveAdminCompleteOpen = () => setAdminRemoveCompleteOpen(true);
-  const handleRemoveAdminCompleteClose = () =>
-    setAdminRemoveCompleteOpen(false);
 
   const [oracleRemoveCompleteOpen, setOracleRemoveCompleteOpen] =
     useState(false);
@@ -109,38 +96,6 @@ export default function Oracle() {
     setTotalOracleCount(totalOracleCount);
   };
 
-  const handleInputAdminChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setInputAdminValue(event.target.value);
-  };
-
-  const handleAddAdmin = async () => {
-    try {
-      await addOracleAdmin(signer, inputAdminValue);
-      setInputAdminValue("");
-      handleAdminCompleteOpen();
-    } catch (e) {
-      alert(e);
-    }
-  };
-
-  const handleInputRemoveAdminChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setInputRemoveAdminValue(event.target.value);
-  };
-
-  const handleRemoveAdmin = async () => {
-    try {
-      await removeOracleAdmin(signer, inputRemoveAdminValue);
-      setInputRemoveAdminValue("");
-      handleRemoveAdminCompleteOpen();
-    } catch (e) {
-      alert(e);
-    }
-  };
-
   const handleInputOracleChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -149,7 +104,7 @@ export default function Oracle() {
 
   const handleAddOracle = async () => {
     try {
-      await addOracle(signer, inputOracleValue);
+      await addJpynOracle(signer, inputOracleValue);
       setInputOracleValue("");
       handleOracleCompleteOpen();
     } catch (e) {
@@ -165,7 +120,7 @@ export default function Oracle() {
 
   const handleRemoveOracle = async () => {
     try {
-      await removeOracle(signer, inputRemoveOracleValue);
+      await removeJpynOracle(signer, inputRemoveOracleValue);
       setInputRemoveOracleValue("");
       handleOracleRemoveCompleteOpen();
     } catch (e) {
@@ -200,93 +155,11 @@ export default function Oracle() {
           aria-label="basic tabs example"
           centered
         >
-          <Tab label="ADD ADMIN" {...a11yProps(0)} />
-          <Tab label="REMOVE ADMIN" {...a11yProps(1)} />
-          <Tab label="ADD ORACLE" {...a11yProps(2)} />
-          <Tab label="REMOVE ORACLE" {...a11yProps(3)} />
+          <Tab label="ADD ORACLE" {...a11yProps(0)} />
+          <Tab label="REMOVE ORACLE" {...a11yProps(1)} />
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
-        <Box
-          display="flex"
-          flexDirection="column"
-          justifyContent="center"
-          alignItems="center"
-          sx={{ mt: "20px", mb: "20px", width: "400px" }}
-        >
-          <Typography>
-            Register the admin wallet address to the oracle.
-          </Typography>
-          <TextField
-            label="ADMIN WALLET ADDRESS"
-            variant="outlined"
-            value={inputAdminValue}
-            onChange={handleInputAdminChange}
-            sx={{ width: "100%", mt: "20px" }}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleAddAdmin}
-            sx={{ mt: "20px" }}
-          >
-            REGISTER
-          </Button>
-        </Box>
-        <Modal
-          open={adminCompleteOpen}
-          onClose={handleAdminCompleteClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={style}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
-              Admin registration completed
-            </Typography>
-          </Box>
-        </Modal>
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={1}>
-        <Box
-          display="flex"
-          flexDirection="column"
-          justifyContent="center"
-          alignItems="center"
-          sx={{ mt: "20px", mb: "20px", width: "400px" }}
-        >
-          <Typography>
-            Remove the admin wallet address from the oracle.
-          </Typography>
-          <TextField
-            label="REMOVE WALLET ADDRESS"
-            variant="outlined"
-            value={inputRemoveAdminValue}
-            onChange={handleInputRemoveAdminChange}
-            sx={{ width: "100%", mt: "20px" }}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleRemoveAdmin}
-            sx={{ mt: "20px" }}
-          >
-            REMOVE
-          </Button>
-        </Box>
-        <Modal
-          open={adminRemoveCompleteOpen}
-          onClose={handleRemoveAdminCompleteClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={style}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
-              Admin reomove completed
-            </Typography>
-          </Box>
-        </Modal>
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={2}>
         <Box
           display="flex"
           flexDirection="column"
@@ -326,7 +199,7 @@ export default function Oracle() {
           </Box>
         </Modal>
       </CustomTabPanel>
-      <CustomTabPanel value={value} index={3}>
+      <CustomTabPanel value={value} index={1}>
         <Box
           display="flex"
           flexDirection="column"
