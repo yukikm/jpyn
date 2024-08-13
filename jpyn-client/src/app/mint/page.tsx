@@ -93,7 +93,9 @@ export default function Mint() {
         console.log("is mint request id", Number(requestId));
         const request = await getRequest(signer, Number(requestId));
         console.log("is mint request", request);
-        if (request.accountStatus === 1 && !isMinted) {
+        console.log("is minted", isMinted);
+        console.log("request.accountStatus", request.accountStatus);
+        if (Number(request.accountStatus) === 1 && !isMinted) {
           setMinted(false);
         }
       } catch (e) {
@@ -206,6 +208,11 @@ export default function Mint() {
             before Minting. You can Mint up to the balance of your registered
             bank account.
           </Typography>
+          <Typography sx={{ color: "red" }}>
+            After registering your bank account information, you will be
+            redirected to the MINT tab. mint button will be activated in about 3
+            minutes, so please leave the screen as it is for a while.
+          </Typography>
           <TextField
             label="Branch No"
             variant="outlined"
@@ -236,6 +243,7 @@ export default function Mint() {
             REGISTER
           </Button>
         </Box>
+
         <Modal
           open={accountRegisterCompleteOpen}
           onClose={handleAccountRegisterCompleteClose}
@@ -260,6 +268,11 @@ export default function Mint() {
           <Typography>
             Mint. Please ensure to register your bank account before Minting.
             You can Mint up to the balance of your registered bank account.
+          </Typography>
+          <Typography sx={{ color: "red" }}>
+            After registering your bank account information, you will be
+            redirected to the MINT tab. mint button will be activated in about 3
+            minutes, so please leave the screen as it is for a while.
           </Typography>
           <Button
             variant="contained"

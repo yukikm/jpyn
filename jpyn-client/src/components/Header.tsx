@@ -34,48 +34,53 @@ export default function Header() {
               home
             </Button>
 
-            <Button
-              key="oracle"
-              onClick={() => router.push("/oracle")}
-              sx={{ my: 2, color: "white", display: "block" }}
-            >
-              oracle
-            </Button>
-
-            {admin ? (
+            {currentAccount ? (
               <>
                 <Button
-                  key="vote"
-                  onClick={() => router.push("/vote")}
+                  key="oracle"
+                  onClick={() => router.push("/oracle")}
                   sx={{ my: 2, color: "white", display: "block" }}
                 >
-                  vote
+                  oracle
+                </Button>
+                {admin ? (
+                  <>
+                    <Button
+                      key="vote"
+                      onClick={() => router.push("/vote")}
+                      sx={{ my: 2, color: "white", display: "block" }}
+                    >
+                      vote
+                    </Button>
+                    <Button
+                      key="propose"
+                      onClick={() => router.push("/propose")}
+                      sx={{ my: 2, color: "white", display: "block" }}
+                    >
+                      propose
+                    </Button>
+                  </>
+                ) : (
+                  <></>
+                )}
+                <Button
+                  key="mint"
+                  onClick={() => router.push("/mint")}
+                  sx={{ my: 2, color: "white", display: "block" }}
+                >
+                  mint
                 </Button>
                 <Button
-                  key="propose"
-                  onClick={() => router.push("/propose")}
+                  key="burn"
+                  onClick={() => router.push("/burn")}
                   sx={{ my: 2, color: "white", display: "block" }}
                 >
-                  propose
+                  burn
                 </Button>
               </>
             ) : (
               <></>
             )}
-            <Button
-              key="mint"
-              onClick={() => router.push("/mint")}
-              sx={{ my: 2, color: "white", display: "block" }}
-            >
-              mint
-            </Button>
-            <Button
-              key="burn"
-              onClick={() => router.push("/burn")}
-              sx={{ my: 2, color: "white", display: "block" }}
-            >
-              burn
-            </Button>
           </Box>
           {currentAccount ? (
             <Typography>{displayAddress}</Typography>

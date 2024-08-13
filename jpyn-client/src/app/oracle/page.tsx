@@ -55,8 +55,10 @@ function a11yProps(index: number) {
 
 export default function Oracle() {
   const {
+    isOracle,
     oracle,
     signer,
+    currentAccount,
     addJpynOracle,
     removeJpynOracle,
     getminOracleQuorum,
@@ -66,6 +68,7 @@ export default function Oracle() {
 
   const [inputOracleValue, setInputOracleValue] = useState("");
   const [inputRemoveOracleValue, setInputRemoveOracleValue] = useState("");
+  const [isOracleState, setIsOracleState] = useState(false);
 
   const [oracleCompleteOpen, setOracleCompleteOpen] = useState(false);
   const handleOracleCompleteOpen = () => setOracleCompleteOpen(true);
@@ -84,6 +87,11 @@ export default function Oracle() {
   useEffect(() => {
     reqMinOracleQuorum();
     reqTotalOracleCount();
+    async function handleIsOracle() {
+      const res = await isOracle(signer, currentAccount);
+      setIsOracleState(res);
+    }
+    handleIsOracle();
   }, []);
 
   const reqMinOracleQuorum = async () => {
@@ -146,7 +154,7 @@ export default function Oracle() {
         {totalOracleCount}
       </Typography>
       <Typography id="modal-modal-title" variant="h6" component="h2">
-        {oracle ? "You are oracle." : "You are not oracle."}
+        {oracle || isOracle ? "You are oracle." : "You are not oracle."}
       </Typography>
       <Box sx={{ width: "50%", borderBottom: 1, borderColor: "divider" }}>
         <Tabs
