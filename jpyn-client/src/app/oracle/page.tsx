@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { ChainContext } from "@/components/ChainContext";
+import { redirect } from "next/navigation";
 
 const style = {
   position: "absolute" as "absolute",
@@ -90,6 +91,9 @@ export default function Oracle() {
     async function handleIsOracle() {
       const res = await isOracle(signer, currentAccount);
       setIsOracleState(res);
+    }
+    if (!currentAccount) {
+      redirect("/");
     }
     handleIsOracle();
   }, []);

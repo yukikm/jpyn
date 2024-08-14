@@ -9,8 +9,9 @@ import {
   Button,
   Modal,
 } from "@mui/material";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ChainContext } from "@/components/ChainContext";
+import { redirect } from "next/navigation";
 
 const style = {
   position: "absolute" as "absolute",
@@ -25,7 +26,7 @@ const style = {
 };
 
 export default function Burn() {
-  const { oracle, signer, burn } = useContext(ChainContext);
+  const { currentAccount, oracle, signer, burn } = useContext(ChainContext);
   const [value, setValue] = useState(0);
 
   const [inputBurnValue, setInputBurnValue] = useState("");
@@ -33,7 +34,11 @@ export default function Burn() {
   const [burnCompleteOpen, setBurnCompleteOpen] = useState(false);
   const handleBurnCompleteOpen = () => setBurnCompleteOpen(true);
   const handleBurnCompleteClose = () => setBurnCompleteOpen(false);
-
+  useEffect(() => {
+    if (!currentAccount) {
+      redirect("/");
+    }
+  }, []);
   const handleInputBurnChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {

@@ -12,6 +12,7 @@ import {
 import { useContext, useEffect, useState } from "react";
 import { ChainContext } from "@/components/ChainContext";
 import { ethers } from "ethers";
+import { redirect } from "next/navigation";
 
 const style = {
   position: "absolute" as "absolute",
@@ -71,6 +72,7 @@ export default function Mint() {
     useState("");
   const [inputAccountNoChange, setInputAccountNoChange] = useState("");
   const [minted, setMinted] = useState(true);
+  const [registered, setRegistered] = useState(false);
 
   const [accountRegisterCompleteOpen, setAccountRegisterCompleteOpen] =
     useState(false);
@@ -102,6 +104,16 @@ export default function Mint() {
         console.log(e);
       }
     };
+    const isMinted = async () => {
+      const minted = await getMinted(signer, currentAccount);
+      if (minted) {
+        setRegistered(true);
+      }
+    };
+    if (!currentAccount) {
+      redirect("/");
+    }
+    isMinted();
     setInterval(isMint, 30000);
   }, []);
 
@@ -239,8 +251,9 @@ export default function Mint() {
             color="primary"
             onClick={handleRegister}
             sx={{ mt: "20px" }}
+            disabled={registered}
           >
-            REGISTER
+            {registered ? "MINTED" : "REGISTER"}
           </Button>
         </Box>
 

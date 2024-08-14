@@ -930,39 +930,13 @@ contract JPYN is IERC20, ERC20Errors, CustomErrors {
     }
 
     function addOracle(address sender) public blackListAddress{
-        if (_admins[sender]) revert ExistingAdmin();
         _jpynOracle.addOracle(sender);
-        _admins[sender] = true;
-        _adminIds[_currentAdminId] = sender;
-        unchecked {
-            _totalAdminCount++;
-        }
-        unchecked {
-            _currentAdminId++;
-        }
-        unchecked {
-            if (_totalAdminCount <= _minAdminCount) {
-                _minApprovalCount = 2;
-            }else{
-                _minApprovalCount = _totalAdminCount / 2 + 1;
-            }
-        }
+        _addAdmin(sender);
     }
 
-    function removeOracle(address sender) private blackListAddress notEnoughAdmins{
-        if (!_admins[sender]) revert NotExistingAdmin();
+    function removeOracle(address sender) public blackListAddress notEnoughAdmins{
         _jpynOracle.removeOracle(sender);
-        _admins[sender] = false;
-        unchecked {
-            _totalAdminCount--;
-        }
-        unchecked {
-            if (_totalAdminCount < _minAdminCount) {
-                _minApprovalCount = 2;
-            }else{
-                _minApprovalCount = _totalAdminCount / 2 + 1;
-            }
-        }
+        _removeAdmin(sender);
     }
 
     /**

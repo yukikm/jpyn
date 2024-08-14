@@ -11,6 +11,7 @@ import {
 import { useContext, useEffect, useState } from "react";
 import { ChainContext } from "@/components/ChainContext";
 import { ethers } from "ethers";
+import { redirect } from "next/navigation";
 
 const style = {
   position: "absolute" as "absolute",
@@ -66,6 +67,9 @@ export default function Propose() {
     getMinApproval,
   } = useContext(ChainContext);
   useEffect(() => {
+    if (!currentAccount) {
+      redirect("/");
+    }
     isVoter();
     reqTotalVoters();
     reqMinApproval();

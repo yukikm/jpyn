@@ -5,7 +5,7 @@ import { ethers } from "ethers";
 dotenv.config();
 
 const privateKey: any = process.env.PRIVATE_KEY;
-const contractAddress: any = process.env.JPYN_ORACLE_CONTRACT_ADDRESS;
+const contractAddress: any = process.env.ORACLE_CONTRACT_ADDRESS;
 
 const provider = new ethers.JsonRpcProvider(process.env.PROVIDER_URL);
 const wallet = new ethers.Wallet(privateKey, provider);

@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import { use, useContext, useEffect, useState } from "react";
 import { ChainContext } from "@/components/ChainContext";
+import { redirect } from "next/navigation";
 
 const style = {
   position: "absolute" as "absolute",
@@ -143,6 +144,9 @@ export default function Propose() {
   } = useContext(ChainContext);
   const [value, setValue] = useState(0);
   useEffect(() => {
+    if (!currentAccount) {
+      redirect("/");
+    }
     getProposedTransferFees();
     getProposedAddAdmin();
     getProposedRemoveAdmin();
