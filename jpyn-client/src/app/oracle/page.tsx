@@ -154,7 +154,7 @@ export default function Oracle() {
         {totalOracleCount}
       </Typography>
       <Typography id="modal-modal-title" variant="h6" component="h2">
-        {oracle || isOracle ? "You are oracle." : "You are not oracle."}
+        {oracle || isOracleState ? "You are oracle." : "You are not oracle."}
       </Typography>
       <Box sx={{ width: "50%", borderBottom: 1, borderColor: "divider" }}>
         <Tabs
