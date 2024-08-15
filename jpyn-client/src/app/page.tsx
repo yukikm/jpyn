@@ -4,9 +4,9 @@ import { useContext, useEffect, useState } from "react";
 import { ChainContext } from "@/components/ChainContext";
 
 export default function Home() {
-  const { signer, getTotalSupply, transferFee, isJpynSafe } =
+  const { signer, gTotalSupply, getTotalSupply, transferFee, isJpynSafe } =
     useContext(ChainContext);
-  const [totalSupply, setTotalSupply] = useState(0);
+  const [totalSupply, setTotalSupply] = useState(gTotalSupply);
   useEffect(() => {
     const fetchTotalSupply = async () => {
       const totalSupply = await getTotalSupply(signer);

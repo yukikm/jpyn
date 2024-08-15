@@ -58,7 +58,7 @@ export const ChainContextProvider = ({
       const transferFee = await _getTransferFee(signer);
       setTransferFee(transferFee);
       const totalSupply = await _getTotalSupply(signer);
-      setGTotalSupply(totalSupply);
+      setGTotalSupply(Number(totalSupply));
       const isJpynSafe = await isSafeEvent(signer);
       setIsJpynSafe(isJpynSafe);
       provider.on("accountsChanged", () => {
