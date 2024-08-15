@@ -9,7 +9,7 @@ export default function Home() {
   const [totalSupply, setTotalSupply] = useState(0);
   useEffect(() => {
     const fetchTotalSupply = async () => {
-      const totalSupply = await getTotalSupply();
+      const totalSupply = await getTotalSupply(signer);
       setTotalSupply(Number(totalSupply));
     };
     fetchTotalSupply();
