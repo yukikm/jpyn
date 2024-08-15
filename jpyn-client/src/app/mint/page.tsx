@@ -176,6 +176,7 @@ export default function Mint() {
       console.log(data.res[0].hashedAccount);
       await mint(signer, data.res[0].hashedAccount);
       setMinted(true);
+      setRegistered(true);
       handleMintCompleteOpen();
     } catch (e) {
       alert(e);
