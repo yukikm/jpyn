@@ -1095,6 +1095,7 @@ export const ChainContextProvider = ({
         getminOracleQuorum,
         getTotalOracleCount,
         // JPYN
+        getTotalSupply,
         transferFee,
         gTotalSupply,
         admin,

@@ -1,11 +1,19 @@
 "use client";
 import { Box, Button, Container, Stack, Typography } from "@mui/material";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ChainContext } from "@/components/ChainContext";
 
 export default function Home() {
-  const { signer, gTotalSupply, transferFee, isJpynSafe } =
+  const { signer, getTotalSupply, transferFee, isJpynSafe } =
     useContext(ChainContext);
+  const [totalSupply, setTotalSupply] = useState(0);
+  useEffect(() => {
+    const fetchTotalSupply = async () => {
+      const totalSupply = await getTotalSupply();
+      setTotalSupply(Number(totalSupply));
+    };
+    fetchTotalSupply();
+  }, []);
 
   return (
     <Box
@@ -66,7 +74,7 @@ export default function Home() {
               Total Supply
             </Typography>
             <Typography variant="h2" align="center">
-              {Number(gTotalSupply)} JPYN
+              {totalSupply} JPYN
             </Typography>
             <Typography variant="h3" align="center" sx={{ mt: "50px" }}>
               Current Transfer fee
