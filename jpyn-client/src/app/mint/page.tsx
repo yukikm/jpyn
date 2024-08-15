@@ -96,7 +96,7 @@ export default function Mint() {
         const request = await getRequest(signer, Number(requestId));
         console.log("is mint request", request);
         console.log("is minted", isMinted);
-        console.log("request.accountStatus", request.accountStatus);
+        console.log("request.accountStatus", Number(request.accountStatus));
         if (Number(request.accountStatus) === 1 && !isMinted) {
           setMinted(false);
         }
@@ -114,7 +114,7 @@ export default function Mint() {
       redirect("/");
     }
     isMinted();
-    setInterval(isMint, 30000);
+    setInterval(isMint, 20000);
   }, []);
 
   const handleInputBranchNoChange = (
