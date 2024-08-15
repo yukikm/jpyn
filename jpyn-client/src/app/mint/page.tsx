@@ -221,9 +221,9 @@ export default function Mint() {
             bank account.
           </Typography>
           <Typography sx={{ color: "red" }}>
-            After registering your bank account information, you will be
-            redirected to the MINT tab. mint button will be activated in about 3
-            minutes, so please leave the screen as it is for a while.
+            After registering your bank account information, you will move to
+            the MINT tab. Mint button will be activated in about 3 minutes, so
+            please leave the screen as it is for a while.
           </Typography>
           <TextField
             label="Branch No"
@@ -283,9 +283,9 @@ export default function Mint() {
             You can Mint up to the balance of your registered bank account.
           </Typography>
           <Typography sx={{ color: "red" }}>
-            After registering your bank account information, you will be
-            redirected to the MINT tab. mint button will be activated in about 3
-            minutes, so please leave the screen as it is for a while.
+            After registering your bank account information, you will move to
+            the MINT tab. Mint button will be activated in about 3 minutes, so
+            please leave the screen as it is for a while.
           </Typography>
           <Button
             variant="contained"
