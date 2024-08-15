@@ -943,7 +943,7 @@ contract JPYN is IERC20, ERC20Errors, CustomErrors {
     * @dev Add an admin to the list of trusted admins.
     * @param sender The address of the admin to add.
     */
-    function _addAdmin(address sender) private onlyAdmin blackListAddress{
+    function _addAdmin(address sender) private blackListAddress{
         if (_admins[sender]) revert ExistingAdmin();
         _admins[sender] = true;
         _adminIds[_currentAdminId] = sender;
@@ -966,7 +966,7 @@ contract JPYN is IERC20, ERC20Errors, CustomErrors {
     * @dev Remove an admin from the list of trusted admins.
     * @param sender The address of the admin to remove.
     */
-    function _removeAdmin(address sender) private onlyAdmin blackListAddress notEnoughAdmins{
+    function _removeAdmin(address sender) private blackListAddress notEnoughAdmins{
         if (!_admins[sender]) revert NotExistingAdmin();
         _admins[sender] = false;
         unchecked {
