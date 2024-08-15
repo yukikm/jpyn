@@ -114,7 +114,7 @@ export default function Mint() {
       redirect("/");
     }
     isMinted();
-    setInterval(isMint, 20000);
+    setInterval(isMint, 5000);
   }, []);
 
   const handleInputBranchNoChange = (
