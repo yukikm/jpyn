@@ -7,6 +7,8 @@ import {
   TextField,
   Button,
   Modal,
+  useTheme,
+  Paper,
 } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { ChainContext } from "@/components/ChainContext";
@@ -18,11 +20,11 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
+  width: 500,
+  bgcolor: "#3f51b5",
   boxShadow: 24,
-  p: 4,
+  color: "white",
+  p: 6,
 };
 
 interface TabPanelProps {
@@ -155,6 +157,7 @@ export default function Propose() {
   const [voter, setVoter] = useState(false);
   const [totalVoters, setTotalVoters] = useState(0);
   const [minApproval, setMinApproval] = useState(0);
+  const theme = useTheme();
 
   // ------------------------------------------------
   const isVoter = async () => {
@@ -371,15 +374,32 @@ export default function Propose() {
       justifyContent="center"
       alignItems="center"
     >
-      <Typography variant="h2" align="center" sx={{ mt: "20px", mb: "20px" }}>
-        Propose
-      </Typography>
-      <Typography>
-        Total Voters: {totalVoters} / Minimum Approval: {minApproval}
-      </Typography>
-      <Typography id="modal-modal-title" variant="h6" component="h2">
-        {voter ? "You are a proposer" : "You are not a proposer"}
-      </Typography>
+      <Paper
+        elevation={0}
+        sx={{
+          width: "500px",
+          backgroundColor: theme.palette.primary.main,
+          padding: "20px",
+          margin: "20px auto",
+        }}
+      >
+        <Typography
+          variant="h2"
+          align="center"
+          sx={{ mb: "20px", color: "white" }}
+        >
+          Propose
+        </Typography>
+        <Typography align="center" sx={{ color: "white", fontWeight: "bold" }}>
+          Total Voters: {totalVoters} / Minimum Approval: {minApproval}
+        </Typography>
+        <Typography align="center" sx={{ color: "white" }}>
+          If the proposal is approved by more than Minimum Approval, the
+          proposal will be approved and automatically reflected in the JPYN
+          contract. Conversely, if there is more than Minimum Approval, the
+          proposal will be rejected.
+        </Typography>
+      </Paper>
       <Box sx={{ width: "100%", borderBottom: 1, borderColor: "divider" }}>
         <Tabs
           value={value}
@@ -402,9 +422,28 @@ export default function Propose() {
           flexDirection="column"
           justifyContent="center"
           alignItems="center"
-          sx={{ mt: "20px", mb: "20px", width: "400px" }}
         >
-          <Typography>Propose new transfer fee for JPYN token.</Typography>
+          <Paper
+            elevation={0}
+            sx={{
+              width: "500px",
+              backgroundColor: theme.palette.primary.main,
+              padding: "20px",
+              margin: "auto",
+            }}
+          >
+            <Typography
+              align="center"
+              sx={{ color: "white", fontWeight: "bold" }}
+            >
+              TRANSFER FEE
+            </Typography>
+            <Typography align="center" sx={{ color: "white" }}>
+              Propose new transfer fee for JPYN token. The remittance fee is
+              paid by the sender to the proposer/voter of the JPYN contract each
+              time the JPYN tokens are remitted.
+            </Typography>
+          </Paper>
           <TextField
             label="TRANSFER FEE(ex. 10 JPYN)"
             variant="outlined"
@@ -428,7 +467,11 @@ export default function Propose() {
           aria-describedby="modal-modal-description"
         >
           <Box sx={style}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
+            <Typography
+              id="modal-modal-title"
+              variant="h5"
+              sx={{ color: "white", fontWeight: "bold" }}
+            >
               Proposed new transfer fee.
             </Typography>
           </Box>
@@ -440,12 +483,27 @@ export default function Propose() {
           flexDirection="column"
           justifyContent="center"
           alignItems="center"
-          sx={{ mt: "20px", mb: "20px", width: "400px" }}
         >
-          <Typography>
-            Propose to add the wallet address as proposer and voter of JPYN
-            token.
-          </Typography>
+          <Paper
+            elevation={0}
+            sx={{
+              width: "500px",
+              backgroundColor: theme.palette.primary.main,
+              padding: "20px",
+              margin: "auto",
+            }}
+          >
+            <Typography
+              align="center"
+              sx={{ color: "white", fontWeight: "bold" }}
+            >
+              ADD JPYN PROPOSER AND VOTER
+            </Typography>
+            <Typography align="center" sx={{ color: "white" }}>
+              Propose to add the wallet address as proposer and voter of JPYN
+              contract.
+            </Typography>
+          </Paper>
           <TextField
             label="NEW WALLET ADDRESS (ex. 0x1234567890)"
             variant="outlined"
@@ -453,6 +511,7 @@ export default function Propose() {
             onChange={handleAddJpynAdminChange}
             sx={{ width: "100%", mt: "20px" }}
           />
+
           <Button
             variant="contained"
             color="primary"
@@ -469,7 +528,11 @@ export default function Propose() {
           aria-describedby="modal-modal-description"
         >
           <Box sx={style}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
+            <Typography
+              id="modal-modal-title"
+              variant="h5"
+              sx={{ color: "white", fontWeight: "bold" }}
+            >
               Proposed new wallet address as proposer and voter of JPYN token
             </Typography>
           </Box>
@@ -481,12 +544,27 @@ export default function Propose() {
           flexDirection="column"
           justifyContent="center"
           alignItems="center"
-          sx={{ mt: "20px", mb: "20px", width: "400px" }}
         >
-          <Typography>
-            Propose to remove the wallet address from proposer and voter of JPYN
-            token.
-          </Typography>
+          <Paper
+            elevation={0}
+            sx={{
+              width: "500px",
+              backgroundColor: theme.palette.primary.main,
+              padding: "20px",
+              margin: "auto",
+            }}
+          >
+            <Typography
+              align="center"
+              sx={{ color: "white", fontWeight: "bold" }}
+            >
+              REMOVE JPYN PROPOSER AND VOTER
+            </Typography>
+            <Typography align="center" sx={{ color: "white" }}>
+              Propose to remove the wallet address from proposer and voter of
+              JPYN contract.
+            </Typography>
+          </Paper>
           <TextField
             label="REMOVED WALLET ADDRESS (ex. 0x1234567890)"
             variant="outlined"
@@ -510,7 +588,11 @@ export default function Propose() {
           aria-describedby="modal-modal-description"
         >
           <Box sx={style}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
+            <Typography
+              id="modal-modal-title"
+              variant="h5"
+              sx={{ color: "white", fontWeight: "bold" }}
+            >
               Proposed remove wallet address from proposer and voter of JPYN
               token
             </Typography>
@@ -523,11 +605,28 @@ export default function Propose() {
           flexDirection="column"
           justifyContent="center"
           alignItems="center"
-          sx={{ mt: "20px", mb: "20px", width: "400px" }}
         >
-          <Typography>
-            Propose to add the wallet address to the wallet blacklist.
-          </Typography>
+          <Paper
+            elevation={0}
+            sx={{
+              width: "500px",
+              backgroundColor: theme.palette.primary.main,
+              padding: "20px",
+              margin: "auto",
+            }}
+          >
+            <Typography
+              align="center"
+              sx={{ color: "white", fontWeight: "bold" }}
+            >
+              ADD WALLET BLACKLIST
+            </Typography>
+            <Typography align="center" sx={{ color: "white" }}>
+              Propose to add the wallet address to the wallet blacklist.
+              Blacklisted wallet addresses cannot transfer JPYN tokens or
+              propose/vote on JPYN contracts.
+            </Typography>
+          </Paper>
           <TextField
             label="ADD WALLET BLACKLIST (ex. 0x1234567890)"
             variant="outlined"
@@ -551,7 +650,11 @@ export default function Propose() {
           aria-describedby="modal-modal-description"
         >
           <Box sx={style}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
+            <Typography
+              id="modal-modal-title"
+              variant="h5"
+              sx={{ color: "white", fontWeight: "bold" }}
+            >
               Proposed add wallet address to the wallet blacklist
             </Typography>
           </Box>
@@ -563,11 +666,28 @@ export default function Propose() {
           flexDirection="column"
           justifyContent="center"
           alignItems="center"
-          sx={{ mt: "20px", mb: "20px", width: "400px" }}
         >
-          <Typography>
-            Propose remove the wallet address from the wallet blacklist.
-          </Typography>
+          <Paper
+            elevation={0}
+            sx={{
+              width: "500px",
+              backgroundColor: theme.palette.primary.main,
+              padding: "20px",
+              margin: "auto",
+            }}
+          >
+            <Typography
+              align="center"
+              sx={{ color: "white", fontWeight: "bold" }}
+            >
+              REMOVE WALLET BLACKLIST
+            </Typography>
+            <Typography align="center" sx={{ color: "white" }}>
+              Propose remove the wallet address from the wallet blacklist. Once
+              the wallet address is removed from the blacklist, the restricted
+              JPYN contract features will be available.
+            </Typography>
+          </Paper>
           <TextField
             label="REMOVE WALLET BLACKLIST (ex. 0x1234567890)"
             variant="outlined"
@@ -591,7 +711,11 @@ export default function Propose() {
           aria-describedby="modal-modal-description"
         >
           <Box sx={style}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
+            <Typography
+              id="modal-modal-title"
+              variant="h5"
+              sx={{ color: "white", fontWeight: "bold" }}
+            >
               Proposed remove wallet address from the wallet blacklist
             </Typography>
           </Box>
@@ -603,11 +727,28 @@ export default function Propose() {
           flexDirection="column"
           justifyContent="center"
           alignItems="center"
-          sx={{ mt: "20px", mb: "20px", width: "400px" }}
         >
-          <Typography>
-            Propose to add the hashed bank account to the bank blacklist.
-          </Typography>
+          <Paper
+            elevation={0}
+            sx={{
+              width: "500px",
+              backgroundColor: theme.palette.primary.main,
+              padding: "20px",
+              margin: "auto",
+            }}
+          >
+            <Typography
+              align="center"
+              sx={{ color: "white", fontWeight: "bold" }}
+            >
+              ADD BANK BLACKLIST
+            </Typography>
+            <Typography align="center" sx={{ color: "white" }}>
+              Propose to add the bank account to the bank blacklist. Blacklisted
+              bank accounts will not be able to register or make JPYN token
+              mints for the relevant account balances.
+            </Typography>
+          </Paper>
           <TextField
             label="Branch No"
             variant="outlined"
@@ -645,7 +786,11 @@ export default function Propose() {
           aria-describedby="modal-modal-description"
         >
           <Box sx={style}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
+            <Typography
+              id="modal-modal-title"
+              variant="h5"
+              sx={{ color: "white", fontWeight: "bold" }}
+            >
               Proposed add hashed bank account to the bank blacklist
             </Typography>
           </Box>
@@ -657,11 +802,29 @@ export default function Propose() {
           flexDirection="column"
           justifyContent="center"
           alignItems="center"
-          sx={{ mt: "20px", mb: "20px", width: "400px" }}
         >
-          <Typography>
-            Propose to remove the hashed bank account from the bank blacklist.
-          </Typography>
+          <Paper
+            elevation={0}
+            sx={{
+              width: "500px",
+              backgroundColor: theme.palette.primary.main,
+              padding: "20px",
+              margin: "auto",
+            }}
+          >
+            <Typography
+              align="center"
+              sx={{ color: "white", fontWeight: "bold" }}
+            >
+              REMOVE BANK BLACKLIST
+            </Typography>
+            <Typography align="center" sx={{ color: "white" }}>
+              Propose to remove the hashed bank account from the bank blacklist.
+              Bank accounts removed from the blacklist will have their
+              registration and JPYN Token Mint restrictions lifted for the
+              relevant account balances.
+            </Typography>
+          </Paper>
           <TextField
             label="Branch No"
             variant="outlined"
@@ -699,7 +862,11 @@ export default function Propose() {
           aria-describedby="modal-modal-description"
         >
           <Box sx={style}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
+            <Typography
+              id="modal-modal-title"
+              variant="h5"
+              sx={{ color: "white", fontWeight: "bold" }}
+            >
               Proposed remove hashed bank account from the bank blacklist
             </Typography>
           </Box>

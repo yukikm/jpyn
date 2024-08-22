@@ -11,6 +11,8 @@ import {
   CardContent,
   CardActions,
   Container,
+  useTheme,
+  Paper,
 } from "@mui/material";
 import { use, useContext, useEffect, useState } from "react";
 import { ChainContext } from "@/components/ChainContext";
@@ -21,11 +23,11 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
+  width: 500,
+  bgcolor: "#3f51b5",
   boxShadow: 24,
-  p: 4,
+  color: "white",
+  p: 6,
 };
 
 interface TabPanelProps {
@@ -143,6 +145,7 @@ export default function Propose() {
     getProposedRemovedAdmin,
   } = useContext(ChainContext);
   const [value, setValue] = useState(0);
+  const theme = useTheme();
   useEffect(() => {
     if (!currentAccount) {
       redirect("/");
@@ -420,16 +423,33 @@ export default function Propose() {
       justifyContent="center"
       alignItems="center"
     >
-      <Typography variant="h2" align="center" sx={{ mt: "20px", mb: "20px" }}>
-        Vote
-      </Typography>
-      <Typography>
-        Total Voters: {totalVoters} / Minimum Approval: {minApproval}
-      </Typography>
+      <Paper
+        elevation={0}
+        sx={{
+          width: "500px",
+          backgroundColor: theme.palette.primary.main,
+          padding: "20px",
+          margin: "20px auto",
+        }}
+      >
+        <Typography
+          variant="h2"
+          align="center"
+          sx={{ mb: "20px", color: "white" }}
+        >
+          Vote
+        </Typography>
+        <Typography align="center" sx={{ color: "white", fontWeight: "bold" }}>
+          Total Voters: {totalVoters} / Minimum Approval: {minApproval}
+        </Typography>
+        <Typography align="center" sx={{ color: "white" }}>
+          If the proposal is approved by more than Minimum Approval, the
+          proposal will be approved and automatically reflected in the JPYN
+          contract. Conversely, if there is more than Minimum Approval, the
+          proposal will be rejected.
+        </Typography>
+      </Paper>
 
-      <Typography id="modal-modal-title" variant="h6" component="h2">
-        {voter ? "You are a voter" : "You are not a voter"}
-      </Typography>
       <Box sx={{ width: "100%", borderBottom: 1, borderColor: "divider" }}>
         <Tabs
           value={value}

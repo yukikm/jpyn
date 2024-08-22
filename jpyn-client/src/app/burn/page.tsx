@@ -8,6 +8,8 @@ import {
   TextField,
   Button,
   Modal,
+  useTheme,
+  Paper,
 } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { ChainContext } from "@/components/ChainContext";
@@ -18,11 +20,11 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
+  width: 500,
+  bgcolor: "#3f51b5",
   boxShadow: 24,
-  p: 4,
+  color: "white",
+  p: 6,
 };
 
 export default function Burn() {
@@ -34,6 +36,7 @@ export default function Burn() {
   const [burnCompleteOpen, setBurnCompleteOpen] = useState(false);
   const handleBurnCompleteOpen = () => setBurnCompleteOpen(true);
   const handleBurnCompleteClose = () => setBurnCompleteOpen(false);
+  const theme = useTheme();
   useEffect(() => {
     if (!currentAccount) {
       redirect("/");
@@ -62,20 +65,39 @@ export default function Burn() {
       justifyContent="center"
       alignItems="center"
     >
-      <Typography variant="h2" align="center" sx={{ mt: "20px", mb: "20px" }}>
-        Burn
-      </Typography>
+      <Paper
+        elevation={0}
+        sx={{
+          width: "500px",
+          backgroundColor: theme.palette.primary.main,
+          padding: "20px",
+          margin: "20px auto",
+        }}
+      >
+        <Typography variant="h2" align="center" sx={{ color: "white" }}>
+          Burn
+        </Typography>
+      </Paper>
 
       <Box
         display="flex"
         flexDirection="column"
         justifyContent="center"
         alignItems="center"
-        sx={{ mt: "20px", mb: "20px", width: "400px" }}
       >
-        <Typography>
-          Please enter the amount of JPYN you want to burn.
-        </Typography>
+        <Paper
+          elevation={0}
+          sx={{
+            width: "500px",
+            backgroundColor: theme.palette.primary.main,
+            padding: "20px",
+            margin: "auto",
+          }}
+        >
+          <Typography align="center" sx={{ color: "white" }}>
+            Please enter the amount of JPYN you want to burn.
+          </Typography>
+        </Paper>
         <TextField
           label="Burn amount (ex. 100)"
           variant="outlined"

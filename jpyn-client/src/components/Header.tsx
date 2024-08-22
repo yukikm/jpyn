@@ -19,23 +19,22 @@ export default function Header() {
     : "";
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+      <AppBar position="static" elevation={0}>
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             JPYN
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { md: "flex" } }}>
-            <Button
-              key="home"
-              onClick={() => router.push("/")}
-              sx={{ my: 2, color: "white", display: "block" }}
-            >
-              home
-            </Button>
-
             {currentAccount ? (
               <>
+                <Button
+                  key="home"
+                  onClick={() => router.push("/")}
+                  sx={{ my: 2, color: "white", display: "block" }}
+                >
+                  home
+                </Button>
                 <Button
                   key="oracle"
                   onClick={() => router.push("/oracle")}

@@ -8,21 +8,24 @@ import {
   TextField,
   Button,
   Modal,
+  Paper,
+  useTheme,
 } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { ChainContext } from "@/components/ChainContext";
 import { redirect } from "next/navigation";
+import { fontGrid } from "@mui/material/styles/cssUtils";
 
 const style = {
   position: "absolute" as "absolute",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
+  width: 500,
+  bgcolor: "#3f51b5",
   boxShadow: 24,
-  p: 4,
+  color: "white",
+  p: 6,
 };
 
 interface TabPanelProps {
@@ -84,6 +87,7 @@ export default function Oracle() {
 
   const [minOracleQuorum, setMinOracleQuorum] = useState(0);
   const [totalOracleCount, setTotalOracleCount] = useState(0);
+  const theme = useTheme();
 
   useEffect(() => {
     reqMinOracleQuorum();
@@ -150,16 +154,34 @@ export default function Oracle() {
       justifyContent="center"
       alignItems="center"
     >
-      <Typography variant="h2" align="center" sx={{ mt: "20px", mb: "20px" }}>
-        Oracle
-      </Typography>
-      <Typography>
-        Min Oracle Quorum: {minOracleQuorum} / Total Oracle Count:{" "}
-        {totalOracleCount}
-      </Typography>
-      <Typography id="modal-modal-title" variant="h6" component="h2">
-        {oracle || isOracleState ? "You are oracle." : "You are not oracle."}
-      </Typography>
+      <Paper
+        elevation={0}
+        sx={{
+          width: "500px",
+          backgroundColor: theme.palette.primary.main,
+          padding: "20px",
+          margin: "20px auto",
+        }}
+      >
+        <Typography
+          variant="h2"
+          align="center"
+          sx={{ mb: "20px", color: "white" }}
+        >
+          Oracle
+        </Typography>
+        <Typography align="center" sx={{ color: "white", fontWeight: "bold" }}>
+          Min Oracle Quorum: {minOracleQuorum} / Total Oracle Count:{" "}
+          {totalOracleCount}
+        </Typography>
+        <Typography align="center" sx={{ color: "white" }}>
+          If the same value is returned from more than the minimum number of
+          oracles, that value is considered correct. An Oracle node that returns
+          an incorrect value or an Oracle node that does not query the MUFG API
+          for 24 hours after a request is made will be penalized, and if
+          penalized three times, its oracle node privileges will be revoked.
+        </Typography>
+      </Paper>
       <Box sx={{ width: "50%", borderBottom: 1, borderColor: "divider" }}>
         <Tabs
           value={value}
@@ -177,11 +199,31 @@ export default function Oracle() {
           flexDirection="column"
           justifyContent="center"
           alignItems="center"
-          sx={{ mt: "20px", mb: "20px", width: "400px" }}
         >
-          <Typography>
-            Register the oracle wallet address to the oracle.
-          </Typography>
+          <Paper
+            elevation={0}
+            sx={{
+              width: "500px",
+              backgroundColor: theme.palette.primary.main,
+              padding: "20px",
+              margin: "auto",
+            }}
+          >
+            <Typography
+              align="center"
+              sx={{ color: "white", fontWeight: "bold" }}
+            >
+              {oracle || isOracleState
+                ? "You are oracle."
+                : "You are not oracle."}
+            </Typography>
+            <Typography align="center" sx={{ color: "white" }}>
+              Register the oracle wallet address to the oracle. You can register
+              with your own address or that of another wallet. Addresses
+              registered on the Oracle Node are also given the right to
+              propose/vote on JPYN contracts.
+            </Typography>
+          </Paper>
           <TextField
             label="ORACLE WALLET ADDRESS"
             variant="outlined"
@@ -205,7 +247,11 @@ export default function Oracle() {
           aria-describedby="modal-modal-description"
         >
           <Box sx={style}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
+            <Typography
+              id="modal-modal-title"
+              variant="h5"
+              sx={{ color: "white", fontWeight: "bold" }}
+            >
               Oracle registration completed
             </Typography>
           </Box>
@@ -217,11 +263,31 @@ export default function Oracle() {
           flexDirection="column"
           justifyContent="center"
           alignItems="center"
-          sx={{ mt: "20px", mb: "20px", width: "400px" }}
         >
-          <Typography>
-            Remove the oracle wallet address from the oracle.
-          </Typography>
+          <Paper
+            elevation={0}
+            sx={{
+              width: "500px",
+              backgroundColor: theme.palette.primary.main,
+              padding: "20px",
+              margin: "auto",
+            }}
+          >
+            <Typography
+              align="center"
+              sx={{ color: "white", fontWeight: "bold" }}
+            >
+              {oracle || isOracleState
+                ? "You are oracle."
+                : "You are not oracle."}
+            </Typography>
+            <Typography align="center" sx={{ color: "white" }}>
+              Remove the oracle wallet address from the oracle. You can remove
+              with your own address or that of another wallet. Addresses removed
+              from the Oracle node will also be stripped of the right to
+              propose/vote on JPYN contracts.
+            </Typography>
+          </Paper>
           <TextField
             label="ORACLE WALLET ADDRESS"
             variant="outlined"
@@ -245,7 +311,11 @@ export default function Oracle() {
           aria-describedby="modal-modal-description"
         >
           <Box sx={style}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
+            <Typography
+              id="modal-modal-title"
+              variant="h5"
+              sx={{ color: "white", fontWeight: "bold" }}
+            >
               Oracle remove completed
             </Typography>
           </Box>

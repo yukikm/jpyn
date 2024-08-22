@@ -199,7 +199,7 @@ contract JpynOracle is OracleErrors{
     r.agreedAccountStatus = 0;
     r.agreedAccountBalance = 0;
     r.createTime = uint32(block.timestamp);
-    r.expireTime = uint32(block.timestamp + 5 * 60);
+    r.expireTime = uint32(block.timestamp + 1440 * 60);
 
     for (uint256 i = 0; i < _currentOracleId; i++) {
       if (_oracles[_oracleIds[i]]) {

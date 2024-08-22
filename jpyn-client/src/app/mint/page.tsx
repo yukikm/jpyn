@@ -8,6 +8,8 @@ import {
   TextField,
   Button,
   Modal,
+  useTheme,
+  Paper,
 } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { ChainContext } from "@/components/ChainContext";
@@ -19,11 +21,11 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
+  width: 500,
+  bgcolor: "#3f51b5",
   boxShadow: 24,
-  p: 4,
+  color: "white",
+  p: 6,
 };
 
 interface TabPanelProps {
@@ -84,6 +86,7 @@ export default function Mint() {
   const [mintCompleteOpen, setMintCompleteOpen] = useState(false);
   const handleMintCompleteOpen = () => setMintCompleteOpen(true);
   const handleMintCompleteClose = () => setMintCompleteOpen(false);
+  const theme = useTheme();
   useEffect(() => {
     const isMint = async () => {
       try {
@@ -194,9 +197,19 @@ export default function Mint() {
       justifyContent="center"
       alignItems="center"
     >
-      <Typography variant="h2" align="center" sx={{ mt: "20px", mb: "20px" }}>
-        Mint
-      </Typography>
+      <Paper
+        elevation={0}
+        sx={{
+          width: "500px",
+          backgroundColor: theme.palette.primary.main,
+          padding: "20px",
+          margin: "20px auto",
+        }}
+      >
+        <Typography variant="h2" align="center" sx={{ color: "white" }}>
+          Mint
+        </Typography>
+      </Paper>
       <Box sx={{ width: "50%", borderBottom: 1, borderColor: "divider" }}>
         <Tabs
           value={value}
@@ -214,18 +227,33 @@ export default function Mint() {
           flexDirection="column"
           justifyContent="center"
           alignItems="center"
-          sx={{ mt: "20px", mb: "20px", width: "400px" }}
         >
-          <Typography>
-            Register bank account. Please ensure to register your bank account
-            before Minting. You can Mint up to the balance of your registered
-            bank account.
-          </Typography>
-          <Typography sx={{ color: "red" }}>
-            After registering your bank account information, you will move to
-            the MINT tab. Mint button will be activated in about 3 minutes, so
-            please leave the screen as it is for a while.
-          </Typography>
+          <Paper
+            elevation={0}
+            sx={{
+              width: "500px",
+              backgroundColor: theme.palette.primary.main,
+              padding: "20px",
+              margin: "auto",
+            }}
+          >
+            <Typography
+              align="center"
+              sx={{ color: "white", fontWeight: "bold" }}
+            >
+              REGISTER BANK ACCOUNT
+            </Typography>
+            <Typography align="center" sx={{ color: "white" }}>
+              Register bank account. Please ensure to register your bank account
+              before Minting. You can Mint up to the balance of your registered
+              bank account.
+            </Typography>
+            <Typography align="center" sx={{ color: "red" }}>
+              After registering your bank account information, you will move to
+              the MINT tab. Mint button will be activated in about 3 minutes, so
+              please leave the screen as it is for a while.
+            </Typography>
+          </Paper>
           <TextField
             label="Branch No"
             variant="outlined"
@@ -265,7 +293,11 @@ export default function Mint() {
           aria-describedby="modal-modal-description"
         >
           <Box sx={style}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
+            <Typography
+              id="modal-modal-title"
+              variant="h5"
+              sx={{ color: "white", fontWeight: "bold" }}
+            >
               Bank account registration completed
             </Typography>
           </Box>
@@ -277,17 +309,32 @@ export default function Mint() {
           flexDirection="column"
           justifyContent="center"
           alignItems="center"
-          sx={{ mt: "20px", mb: "20px", width: "400px" }}
         >
-          <Typography>
-            Mint. Please ensure to register your bank account before Minting.
-            You can Mint up to the balance of your registered bank account.
-          </Typography>
-          <Typography sx={{ color: "red" }}>
-            After registering your bank account information, you will move to
-            the MINT tab. Mint button will be activated in about 3 minutes, so
-            please leave the screen as it is for a while.
-          </Typography>
+          <Paper
+            elevation={0}
+            sx={{
+              width: "500px",
+              backgroundColor: theme.palette.primary.main,
+              padding: "20px",
+              margin: "auto",
+            }}
+          >
+            <Typography
+              align="center"
+              sx={{ color: "white", fontWeight: "bold" }}
+            >
+              MINT
+            </Typography>
+            <Typography align="center" sx={{ color: "white" }}>
+              Mint. Please ensure to register your bank account before Minting.
+              You can Mint up to the balance of your registered bank account.
+            </Typography>
+            <Typography align="center" sx={{ color: "red" }}>
+              After registering your bank account information, you will move to
+              the MINT tab. Mint button will be activated in about 3 minutes, so
+              please leave the screen as it is for a while.
+            </Typography>
+          </Paper>
           <Button
             variant="contained"
             color="primary"
