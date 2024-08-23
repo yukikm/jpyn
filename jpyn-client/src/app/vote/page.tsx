@@ -472,25 +472,39 @@ export default function Propose() {
           flexDirection="column"
           justifyContent="center"
           alignItems="center"
-          sx={{ mt: "20px", mb: "20px", width: "400px" }}
         >
-          <Typography
-            variant="h5"
-            align="center"
-            sx={{ mt: "20px", mb: "20px" }}
+          <Paper
+            elevation={0}
+            sx={{
+              width: "500px",
+              backgroundColor: theme.palette.primary.main,
+              padding: "20px",
+              margin: "auto",
+            }}
           >
-            Proposed Transfer Fee
-          </Typography>
+            <Typography
+              align="center"
+              sx={{ color: "white", fontWeight: "bold" }}
+            >
+              TRANSFER FEE
+            </Typography>
+            <Typography align="center" sx={{ color: "white" }}>
+              Propose new transfer fee for JPYN token. The remittance fee is
+              paid by the sender to the proposer/voter of the JPYN contract each
+              time the JPYN tokens are remitted.
+            </Typography>
+          </Paper>
           {proposedTransferFees!.map((_transferFee, _index) => {
             return (
               <Card
                 sx={{
-                  maxWidth: 345,
+                  width: 300,
                   mt: "10px",
-                  borderColor: "divider",
-                  borderWidth: 1,
-                  borderStyle: "solid",
                   boxShadow: "none",
+                  padding: "20px",
+                  border: "2px solid",
+                  borderColor: theme.palette.primary.main,
+                  backgroundColor: "transparent",
                 }}
                 key={_index}
               >
@@ -502,19 +516,25 @@ export default function Propose() {
                       gutterBottom
                       variant="h4"
                       component="div"
-                      sx={{ textAlign: "center" }}
+                      sx={{
+                        textAlign: "center",
+                        fontWeight: "bold",
+                        color: theme.palette.primary.main,
+                      }}
                     >
                       Ended
                     </Typography>
                   )}
                   <Typography
                     gutterBottom
-                    variant="h6"
+                    variant="h4"
                     component="div"
                     sx={{
                       textAlign: "center",
                       wordWrap: "break-word",
                       overflowWrap: "break-word",
+                      fontWeight: "bold",
+                      color: theme.palette.primary.main,
                     }}
                   >
                     {Number(_transferFee.proposedTransferFee)} JPYN
@@ -526,11 +546,11 @@ export default function Propose() {
                       alignItems: "center",
                     }}
                   >
-                    <Typography component="span" color="green">
+                    <Typography color="green" sx={{ mr: "5px" }}>
                       AGREE {Number(_transferFee.approvalCount)}
-                    </Typography>{" "}
-                    /{" "}
-                    <Typography component="span" color="error">
+                    </Typography>
+
+                    <Typography color="error" sx={{ ml: "5px" }}>
                       DISAGREE {Number(_transferFee.rejectCount)}
                     </Typography>
                   </Box>
@@ -542,6 +562,7 @@ export default function Propose() {
                     color="success"
                     onClick={() => vProposedTransferFee(_index, true)}
                     disabled={Number(_transferFee.status) !== 0}
+                    sx={{ mr: "5px", width: "90px" }}
                   >
                     Agree
                   </Button>
@@ -551,6 +572,7 @@ export default function Propose() {
                     color="error"
                     onClick={() => vProposedTransferFee(_index, false)}
                     disabled={Number(_transferFee.status) !== 0}
+                    sx={{ ml: "5px", width: "90px" }}
                   >
                     Disagree
                   </Button>
@@ -566,7 +588,11 @@ export default function Propose() {
           aria-describedby="modal-modal-description"
         >
           <Box sx={style}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
+            <Typography
+              id="modal-modal-title"
+              variant="h5"
+              sx={{ color: "white", fontWeight: "bold" }}
+            >
               Voted successfully!
             </Typography>
           </Box>
@@ -578,25 +604,38 @@ export default function Propose() {
           flexDirection="column"
           justifyContent="center"
           alignItems="center"
-          sx={{ mt: "20px", mb: "20px", width: "500px" }}
         >
-          <Typography
-            variant="h5"
-            align="center"
-            sx={{ mt: "20px", mb: "20px" }}
+          <Paper
+            elevation={0}
+            sx={{
+              width: "500px",
+              backgroundColor: theme.palette.primary.main,
+              padding: "20px",
+              margin: "auto",
+            }}
           >
-            Proposed add jpyn proposer and voter
-          </Typography>
+            <Typography
+              align="center"
+              sx={{ color: "white", fontWeight: "bold" }}
+            >
+              ADD JPYN PROPOSER AND VOTER
+            </Typography>
+            <Typography align="center" sx={{ color: "white" }}>
+              Propose to add the wallet address as proposer and voter of JPYN
+              contract.
+            </Typography>
+          </Paper>
           {proposedAddAdmin!.map((_admin, _index) => {
             return (
               <Card
                 sx={{
-                  maxWidth: 450,
+                  maxWidth: 500,
                   mt: "10px",
-                  borderColor: "divider",
-                  borderWidth: 1,
-                  borderStyle: "solid",
                   boxShadow: "none",
+                  padding: "20px",
+                  border: "2px solid",
+                  borderColor: theme.palette.primary.main,
+                  backgroundColor: "transparent",
                 }}
                 key={_index}
               >
@@ -608,19 +647,25 @@ export default function Propose() {
                       gutterBottom
                       variant="h4"
                       component="div"
-                      sx={{ textAlign: "center" }}
+                      sx={{
+                        textAlign: "center",
+                        fontWeight: "bold",
+                        color: theme.palette.primary.main,
+                      }}
                     >
                       Ended
                     </Typography>
                   )}
                   <Typography
                     gutterBottom
-                    variant="body1"
+                    variant="h6"
                     component="div"
                     sx={{
                       textAlign: "center",
                       wordWrap: "break-word",
                       overflowWrap: "break-word",
+                      fontWeight: "bold",
+                      color: theme.palette.primary.main,
                     }}
                   >
                     {String(_admin.proposedAdmin)}
@@ -632,11 +677,11 @@ export default function Propose() {
                       alignItems: "center",
                     }}
                   >
-                    <Typography component="span" color="green">
+                    <Typography color="green" sx={{ mr: "5px" }}>
                       AGREE {Number(_admin.approvalCount)}
                     </Typography>
-                    /
-                    <Typography component="span" color="error">
+
+                    <Typography color="error" sx={{ ml: "5px" }}>
                       DISAGREE {Number(_admin.rejectCount)}
                     </Typography>
                   </Box>
@@ -648,6 +693,7 @@ export default function Propose() {
                     color="success"
                     onClick={() => vProposedAddAdmin(_index, true)}
                     disabled={Number(_admin.status) !== 0}
+                    sx={{ mr: "5px", width: "90px" }}
                   >
                     Agree
                   </Button>
@@ -657,6 +703,7 @@ export default function Propose() {
                     color="error"
                     onClick={() => vProposedAddAdmin(_index, false)}
                     disabled={Number(_admin.status) !== 0}
+                    sx={{ ml: "5px", width: "90px" }}
                   >
                     Disagree
                   </Button>
@@ -672,7 +719,11 @@ export default function Propose() {
           aria-describedby="modal-modal-description"
         >
           <Box sx={style}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
+            <Typography
+              id="modal-modal-title"
+              variant="h5"
+              sx={{ color: "white", fontWeight: "bold" }}
+            >
               Voted successfully!
             </Typography>
           </Box>
@@ -684,25 +735,38 @@ export default function Propose() {
           flexDirection="column"
           justifyContent="center"
           alignItems="center"
-          sx={{ mt: "20px", mb: "20px", width: "500px" }}
         >
-          <Typography
-            variant="h5"
-            align="center"
-            sx={{ mt: "20px", mb: "20px" }}
+          <Paper
+            elevation={0}
+            sx={{
+              width: "500px",
+              backgroundColor: theme.palette.primary.main,
+              padding: "20px",
+              margin: "auto",
+            }}
           >
-            Proposed remove jpyn proposer and voter
-          </Typography>
+            <Typography
+              align="center"
+              sx={{ color: "white", fontWeight: "bold" }}
+            >
+              REMOVE JPYN PROPOSER AND VOTER
+            </Typography>
+            <Typography align="center" sx={{ color: "white" }}>
+              Propose to remove the wallet address from proposer and voter of
+              JPYN contract.
+            </Typography>
+          </Paper>
           {proposedRemoveAdmin!.map((_admin, _index) => {
             return (
               <Card
                 sx={{
-                  maxWidth: 450,
+                  maxWidth: 500,
                   mt: "10px",
-                  borderColor: "divider",
-                  borderWidth: 1,
-                  borderStyle: "solid",
                   boxShadow: "none",
+                  padding: "20px",
+                  border: "2px solid",
+                  borderColor: theme.palette.primary.main,
+                  backgroundColor: "transparent",
                 }}
                 key={_index}
               >
@@ -714,19 +778,24 @@ export default function Propose() {
                       gutterBottom
                       variant="h4"
                       component="div"
-                      sx={{ textAlign: "center" }}
+                      sx={{
+                        textAlign: "center",
+                        fontWeight: "bold",
+                        color: theme.palette.primary.main,
+                      }}
                     >
                       Ended
                     </Typography>
                   )}
                   <Typography
                     gutterBottom
-                    variant="body1"
-                    component="div"
+                    variant="h6"
                     sx={{
                       textAlign: "center",
                       wordWrap: "break-word",
                       overflowWrap: "break-word",
+                      fontWeight: "bold",
+                      color: theme.palette.primary.main,
                     }}
                   >
                     {String(_admin.proposedRemovedAdmin)}
@@ -738,11 +807,11 @@ export default function Propose() {
                       alignItems: "center",
                     }}
                   >
-                    <Typography component="span" color="green">
+                    <Typography color="green" sx={{ mr: "5px" }}>
                       AGREE {Number(_admin.approvalCount)}
                     </Typography>
-                    /
-                    <Typography component="span" color="error">
+
+                    <Typography color="error" sx={{ ml: "5px" }}>
                       DISAGREE {Number(_admin.rejectCount)}
                     </Typography>
                   </Box>
@@ -754,6 +823,7 @@ export default function Propose() {
                     color="success"
                     onClick={() => vProposedRemoveAdmin(_index, true)}
                     disabled={Number(_admin.status) !== 0}
+                    sx={{ mr: "5px", width: "90px" }}
                   >
                     Agree
                   </Button>
@@ -763,6 +833,7 @@ export default function Propose() {
                     color="error"
                     onClick={() => vProposedRemoveAdmin(_index, false)}
                     disabled={Number(_admin.status) !== 0}
+                    sx={{ ml: "5px", width: "90px" }}
                   >
                     Disagree
                   </Button>
@@ -778,7 +849,11 @@ export default function Propose() {
           aria-describedby="modal-modal-description"
         >
           <Box sx={style}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
+            <Typography
+              id="modal-modal-title"
+              variant="h5"
+              sx={{ color: "white", fontWeight: "bold" }}
+            >
               Voted successfully!
             </Typography>
           </Box>
@@ -790,25 +865,39 @@ export default function Propose() {
           flexDirection="column"
           justifyContent="center"
           alignItems="center"
-          sx={{ mt: "20px", mb: "20px", width: "500px" }}
         >
-          <Typography
-            variant="h5"
-            align="center"
-            sx={{ mt: "20px", mb: "20px" }}
+          <Paper
+            elevation={0}
+            sx={{
+              width: "500px",
+              backgroundColor: theme.palette.primary.main,
+              padding: "20px",
+              margin: "auto",
+            }}
           >
-            Proposed add wallet blacklist
-          </Typography>
+            <Typography
+              align="center"
+              sx={{ color: "white", fontWeight: "bold" }}
+            >
+              ADD WALLET BLACKLIST
+            </Typography>
+            <Typography align="center" sx={{ color: "white" }}>
+              Propose to add the wallet address to the wallet blacklist.
+              Blacklisted wallet addresses cannot transfer JPYN tokens or
+              propose/vote on JPYN contracts.
+            </Typography>
+          </Paper>
           {proposedAddWalletBlackList!.map((_blacklist, _index) => {
             return (
               <Card
                 sx={{
-                  maxWidth: 450,
+                  maxWidth: 500,
                   mt: "10px",
-                  borderColor: "divider",
-                  borderWidth: 1,
-                  borderStyle: "solid",
                   boxShadow: "none",
+                  padding: "20px",
+                  border: "2px solid",
+                  borderColor: theme.palette.primary.main,
+                  backgroundColor: "transparent",
                 }}
                 key={_index}
               >
@@ -820,19 +909,25 @@ export default function Propose() {
                       gutterBottom
                       variant="h4"
                       component="div"
-                      sx={{ textAlign: "center" }}
+                      sx={{
+                        textAlign: "center",
+                        fontWeight: "bold",
+                        color: theme.palette.primary.main,
+                      }}
                     >
                       Ended
                     </Typography>
                   )}
                   <Typography
                     gutterBottom
-                    variant="body1"
+                    variant="h6"
                     component="div"
                     sx={{
                       textAlign: "center",
                       wordWrap: "break-word",
                       overflowWrap: "break-word",
+                      fontWeight: "bold",
+                      color: theme.palette.primary.main,
                     }}
                   >
                     {String(_blacklist.proposedBlackListAddress)}
@@ -844,11 +939,11 @@ export default function Propose() {
                       alignItems: "center",
                     }}
                   >
-                    <Typography component="span" color="green">
+                    <Typography color="green" sx={{ mr: "5px" }}>
                       AGREE {Number(_blacklist.approvalCount)}
                     </Typography>
                     /
-                    <Typography component="span" color="error">
+                    <Typography color="error" sx={{ ml: "5px" }}>
                       DISAGREE {Number(_blacklist.rejectCount)}
                     </Typography>
                   </Box>
@@ -860,6 +955,7 @@ export default function Propose() {
                     color="success"
                     onClick={() => vProposedAddWalletBlackList(_index, true)}
                     disabled={Number(_blacklist.status) !== 0}
+                    sx={{ mr: "5px", width: "90px" }}
                   >
                     Agree
                   </Button>
@@ -869,6 +965,7 @@ export default function Propose() {
                     color="error"
                     onClick={() => vProposedAddWalletBlackList(_index, false)}
                     disabled={Number(_blacklist.status) !== 0}
+                    sx={{ ml: "5px", width: "90px" }}
                   >
                     Disagree
                   </Button>
@@ -884,7 +981,11 @@ export default function Propose() {
           aria-describedby="modal-modal-description"
         >
           <Box sx={style}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
+            <Typography
+              id="modal-modal-title"
+              variant="h5"
+              sx={{ color: "white", fontWeight: "bold" }}
+            >
               Voted successfully!
             </Typography>
           </Box>
@@ -896,25 +997,39 @@ export default function Propose() {
           flexDirection="column"
           justifyContent="center"
           alignItems="center"
-          sx={{ mt: "20px", mb: "20px", width: "500px" }}
         >
-          <Typography
-            variant="h5"
-            align="center"
-            sx={{ mt: "20px", mb: "20px" }}
+          <Paper
+            elevation={0}
+            sx={{
+              width: "500px",
+              backgroundColor: theme.palette.primary.main,
+              padding: "20px",
+              margin: "auto",
+            }}
           >
-            Proposed remove wallet blacklist
-          </Typography>
+            <Typography
+              align="center"
+              sx={{ color: "white", fontWeight: "bold" }}
+            >
+              REMOVE WALLET BLACKLIST
+            </Typography>
+            <Typography align="center" sx={{ color: "white" }}>
+              Propose remove the wallet address from the wallet blacklist. Once
+              the wallet address is removed from the blacklist, the restricted
+              JPYN contract features will be available.
+            </Typography>
+          </Paper>
           {proposedRemoveWalletBlackList!.map((_blacklist, _index) => {
             return (
               <Card
                 sx={{
-                  maxWidth: 450,
+                  maxWidth: 500,
                   mt: "10px",
-                  borderColor: "divider",
-                  borderWidth: 1,
-                  borderStyle: "solid",
                   boxShadow: "none",
+                  padding: "20px",
+                  border: "2px solid",
+                  borderColor: theme.palette.primary.main,
+                  backgroundColor: "transparent",
                 }}
                 key={_index}
               >
@@ -926,19 +1041,25 @@ export default function Propose() {
                       gutterBottom
                       variant="h4"
                       component="div"
-                      sx={{ textAlign: "center" }}
+                      sx={{
+                        textAlign: "center",
+                        fontWeight: "bold",
+                        color: theme.palette.primary.main,
+                      }}
                     >
                       Ended
                     </Typography>
                   )}
                   <Typography
                     gutterBottom
-                    variant="body1"
+                    variant="h6"
                     component="div"
                     sx={{
                       textAlign: "center",
                       wordWrap: "break-word",
                       overflowWrap: "break-word",
+                      fontWeight: "bold",
+                      color: theme.palette.primary.main,
                     }}
                   >
                     {String(_blacklist.proposedRemoveBlackListAddress)}
@@ -950,11 +1071,11 @@ export default function Propose() {
                       alignItems: "center",
                     }}
                   >
-                    <Typography component="span" color="green">
+                    <Typography color="green" sx={{ mr: "5px" }}>
                       AGREE {Number(_blacklist.approvalCount)}
                     </Typography>
-                    /
-                    <Typography component="span" color="error">
+
+                    <Typography color="error" sx={{ ml: "5px" }}>
                       DISAGREE {Number(_blacklist.rejectCount)}
                     </Typography>
                   </Box>
@@ -966,6 +1087,7 @@ export default function Propose() {
                     color="success"
                     onClick={() => vProposedRemoveWalletBlackList(_index, true)}
                     disabled={Number(_blacklist.status) !== 0}
+                    sx={{ mr: "5px", width: "90px" }}
                   >
                     Agree
                   </Button>
@@ -977,6 +1099,7 @@ export default function Propose() {
                       vProposedRemoveWalletBlackList(_index, false)
                     }
                     disabled={Number(_blacklist.status) !== 0}
+                    sx={{ ml: "5px", width: "90px" }}
                   >
                     Disagree
                   </Button>
@@ -992,7 +1115,11 @@ export default function Propose() {
           aria-describedby="modal-modal-description"
         >
           <Box sx={style}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
+            <Typography
+              id="modal-modal-title"
+              variant="h5"
+              sx={{ color: "white", fontWeight: "bold" }}
+            >
               Voted successfully!
             </Typography>
           </Box>
@@ -1004,25 +1131,39 @@ export default function Propose() {
           flexDirection="column"
           justifyContent="center"
           alignItems="center"
-          sx={{ mt: "20px", mb: "20px", width: "500px" }}
         >
-          <Typography
-            variant="h5"
-            align="center"
-            sx={{ mt: "20px", mb: "20px" }}
+          <Paper
+            elevation={0}
+            sx={{
+              width: "500px",
+              backgroundColor: theme.palette.primary.main,
+              padding: "20px",
+              margin: "auto",
+            }}
           >
-            Proposed add bank blacklist
-          </Typography>
+            <Typography
+              align="center"
+              sx={{ color: "white", fontWeight: "bold" }}
+            >
+              ADD BANK BLACKLIST
+            </Typography>
+            <Typography align="center" sx={{ color: "white" }}>
+              Propose to add the bank account to the bank blacklist. Blacklisted
+              bank accounts will not be able to register or make JPYN token
+              mints for the relevant account balances.
+            </Typography>
+          </Paper>
           {proposedAddBankBlackList!.map((_blacklist, _index) => {
             return (
               <Card
                 sx={{
-                  maxWidth: 450,
+                  maxWidth: 500,
                   mt: "10px",
-                  borderColor: "divider",
-                  borderWidth: 1,
-                  borderStyle: "solid",
                   boxShadow: "none",
+                  padding: "20px",
+                  border: "2px solid",
+                  borderColor: theme.palette.primary.main,
+                  backgroundColor: "transparent",
                 }}
                 key={_index}
               >
@@ -1034,7 +1175,11 @@ export default function Propose() {
                       gutterBottom
                       variant="h4"
                       component="div"
-                      sx={{ textAlign: "center" }}
+                      sx={{
+                        textAlign: "center",
+                        fontWeight: "bold",
+                        color: theme.palette.primary.main,
+                      }}
                     >
                       Ended
                     </Typography>
@@ -1043,17 +1188,52 @@ export default function Propose() {
                     gutterBottom
                     variant="body2"
                     component="div"
-                    sx={{ wordWrap: "break-word", overflowWrap: "break-word" }}
+                    sx={{
+                      wordWrap: "break-word",
+                      overflowWrap: "break-word",
+                      fontWeight: "bold",
+                      color: theme.palette.primary.main,
+                    }}
                   >
                     Hashed Account: {String(_blacklist.proposedBankBlackList)}
                   </Typography>
-                  <Typography gutterBottom variant="body2" component="div">
+                  <Typography
+                    gutterBottom
+                    variant="body2"
+                    component="div"
+                    sx={{
+                      wordWrap: "break-word",
+                      overflowWrap: "break-word",
+                      fontWeight: "bold",
+                      color: theme.palette.primary.main,
+                    }}
+                  >
                     Branch No: {String(_blacklist.branchNo)}
                   </Typography>
-                  <Typography gutterBottom variant="body2" component="div">
+                  <Typography
+                    gutterBottom
+                    variant="body2"
+                    component="div"
+                    sx={{
+                      wordWrap: "break-word",
+                      overflowWrap: "break-word",
+                      fontWeight: "bold",
+                      color: theme.palette.primary.main,
+                    }}
+                  >
                     Account Type Code: {String(_blacklist.accountTypeCode)}
                   </Typography>
-                  <Typography gutterBottom variant="body2" component="div">
+                  <Typography
+                    gutterBottom
+                    variant="body2"
+                    component="div"
+                    sx={{
+                      wordWrap: "break-word",
+                      overflowWrap: "break-word",
+                      fontWeight: "bold",
+                      color: theme.palette.primary.main,
+                    }}
+                  >
                     Account No: {String(_blacklist.accountNo)}
                   </Typography>
                   <Box
@@ -1063,11 +1243,11 @@ export default function Propose() {
                       alignItems: "center",
                     }}
                   >
-                    <Typography component="span" color="green">
+                    <Typography color="green" sx={{ mr: "5px" }}>
                       AGREE {Number(_blacklist.approvalCount)}
                     </Typography>
-                    /
-                    <Typography component="span" color="error">
+
+                    <Typography color="error" sx={{ ml: "5px" }}>
                       DISAGREE {Number(_blacklist.rejectCount)}
                     </Typography>
                   </Box>
@@ -1079,6 +1259,7 @@ export default function Propose() {
                     color="success"
                     onClick={() => vProposedAddBankBlackList(_index, true)}
                     disabled={Number(_blacklist.status) !== 0}
+                    sx={{ mr: "5px", width: "90px" }}
                   >
                     Agree
                   </Button>
@@ -1088,6 +1269,7 @@ export default function Propose() {
                     color="error"
                     onClick={() => vProposedAddBankBlackList(_index, false)}
                     disabled={Number(_blacklist.status) !== 0}
+                    sx={{ ml: "5px", width: "90px" }}
                   >
                     Disagree
                   </Button>
@@ -1103,7 +1285,11 @@ export default function Propose() {
           aria-describedby="modal-modal-description"
         >
           <Box sx={style}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
+            <Typography
+              id="modal-modal-title"
+              variant="h5"
+              sx={{ color: "white", fontWeight: "bold" }}
+            >
               Voted successfully!
             </Typography>
           </Box>
@@ -1115,25 +1301,40 @@ export default function Propose() {
           flexDirection="column"
           justifyContent="center"
           alignItems="center"
-          sx={{ mt: "20px", mb: "20px", width: "500px" }}
         >
-          <Typography
-            variant="h5"
-            align="center"
-            sx={{ mt: "20px", mb: "20px" }}
+          <Paper
+            elevation={0}
+            sx={{
+              width: "500px",
+              backgroundColor: theme.palette.primary.main,
+              padding: "20px",
+              margin: "auto",
+            }}
           >
-            Proposed remove bank blacklist
-          </Typography>
+            <Typography
+              align="center"
+              sx={{ color: "white", fontWeight: "bold" }}
+            >
+              REMOVE BANK BLACKLIST
+            </Typography>
+            <Typography align="center" sx={{ color: "white" }}>
+              Propose to remove the hashed bank account from the bank blacklist.
+              Bank accounts removed from the blacklist will have their
+              registration and JPYN Token Mint restrictions lifted for the
+              relevant account balances.
+            </Typography>
+          </Paper>
           {proposedRemoveBankBlackList!.map((_blacklist, _index) => {
             return (
               <Card
                 sx={{
-                  maxWidth: 450,
+                  maxWidth: 500,
                   mt: "10px",
-                  borderColor: "divider",
-                  borderWidth: 1,
-                  borderStyle: "solid",
                   boxShadow: "none",
+                  padding: "20px",
+                  border: "2px solid",
+                  borderColor: theme.palette.primary.main,
+                  backgroundColor: "transparent",
                 }}
                 key={_index}
               >
@@ -1145,7 +1346,11 @@ export default function Propose() {
                       gutterBottom
                       variant="h4"
                       component="div"
-                      sx={{ textAlign: "center" }}
+                      sx={{
+                        textAlign: "center",
+                        fontWeight: "bold",
+                        color: theme.palette.primary.main,
+                      }}
                     >
                       Ended
                     </Typography>
@@ -1154,18 +1359,53 @@ export default function Propose() {
                     gutterBottom
                     variant="body2"
                     component="div"
-                    sx={{ wordWrap: "break-word", overflowWrap: "break-word" }}
+                    sx={{
+                      wordWrap: "break-word",
+                      overflowWrap: "break-word",
+                      fontWeight: "bold",
+                      color: theme.palette.primary.main,
+                    }}
                   >
                     Hashed Account:{" "}
                     {String(_blacklist.proposedRemoveBankBlackList)}
                   </Typography>
-                  <Typography gutterBottom variant="body2" component="div">
+                  <Typography
+                    gutterBottom
+                    variant="body2"
+                    component="div"
+                    sx={{
+                      wordWrap: "break-word",
+                      overflowWrap: "break-word",
+                      fontWeight: "bold",
+                      color: theme.palette.primary.main,
+                    }}
+                  >
                     Branch No: {String(_blacklist.branchNo)}
                   </Typography>
-                  <Typography gutterBottom variant="body2" component="div">
+                  <Typography
+                    gutterBottom
+                    variant="body2"
+                    component="div"
+                    sx={{
+                      wordWrap: "break-word",
+                      overflowWrap: "break-word",
+                      fontWeight: "bold",
+                      color: theme.palette.primary.main,
+                    }}
+                  >
                     Account Type Code: {String(_blacklist.accountTypeCode)}
                   </Typography>
-                  <Typography gutterBottom variant="body2" component="div">
+                  <Typography
+                    gutterBottom
+                    variant="body2"
+                    component="div"
+                    sx={{
+                      wordWrap: "break-word",
+                      overflowWrap: "break-word",
+                      fontWeight: "bold",
+                      color: theme.palette.primary.main,
+                    }}
+                  >
                     Account No: {String(_blacklist.accountNo)}
                   </Typography>
                   <Box
@@ -1175,11 +1415,11 @@ export default function Propose() {
                       alignItems: "center",
                     }}
                   >
-                    <Typography component="span" color="green">
+                    <Typography color="green" sx={{ mr: "5px" }}>
                       AGREE {Number(_blacklist.approvalCount)}
                     </Typography>
                     /
-                    <Typography component="span" color="error">
+                    <Typography color="error" sx={{ ml: "5px" }}>
                       DISAGREE {Number(_blacklist.rejectCount)}
                     </Typography>
                   </Box>
@@ -1191,6 +1431,7 @@ export default function Propose() {
                     color="success"
                     onClick={() => vProposedRemoveBankBlackList(_index, true)}
                     disabled={Number(_blacklist.status) !== 0}
+                    sx={{ mr: "5px", width: "90px" }}
                   >
                     Agree
                   </Button>
@@ -1200,6 +1441,7 @@ export default function Propose() {
                     color="error"
                     onClick={() => vProposedRemoveBankBlackList(_index, false)}
                     disabled={Number(_blacklist.status) !== 0}
+                    sx={{ ml: "5px", width: "90px" }}
                   >
                     Disagree
                   </Button>
@@ -1215,7 +1457,11 @@ export default function Propose() {
           aria-describedby="modal-modal-description"
         >
           <Box sx={style}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
+            <Typography
+              id="modal-modal-title"
+              variant="h5"
+              sx={{ color: "white", fontWeight: "bold" }}
+            >
               Voted successfully!
             </Typography>
           </Box>
