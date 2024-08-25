@@ -352,7 +352,11 @@ export default function Mint() {
           aria-describedby="modal-modal-description"
         >
           <Box sx={style}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
+            <Typography
+              id="modal-modal-title"
+              variant="h5"
+              sx={{ color: "white", fontWeight: "bold" }}
+            >
               Mint completed
             </Typography>
           </Box>
